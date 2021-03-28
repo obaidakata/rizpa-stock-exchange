@@ -24,6 +24,7 @@ public class RizpaConsoleApplication {
         scanner = new Scanner(System.in);
         rizpaFacade = new RizpaFacade();
         initMenu();
+//        forTestOnly();
     }
 
     private void initMenu() {
@@ -50,7 +51,7 @@ public class RizpaConsoleApplication {
                 menuItem.getAction().run();
             }
             else {
-                System.out.println("OperationNotAvailable");
+                System.out.println("Operation not available, please provide XML file first.");
             }
 
         }while(!isExit);
@@ -60,11 +61,22 @@ public class RizpaConsoleApplication {
     private MenuItem getUserChoice() {
         String userChoice = scanner.nextLine();
         MenuItem menuItem = menu.get(userChoice);
+        menuItem = menuItem.isAvailable() ? menuItem : null;
         return menuItem;
     }
 
     private void needToExit() {
         isExit = true;
+    }
+
+    private void forTestOnly() {
+        try {
+            RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parse("src/resources/ex1-small.xml");
+            rizpaStockExchangeDescriptor = newRizpaStockExchangeDescriptor != null ? newRizpaStockExchangeDescriptor : rizpaStockExchangeDescriptor;
+            rizpaFacade.loadData(rizpaStockExchangeDescriptor);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void readFilePathUFromUser(){
@@ -73,9 +85,16 @@ public class RizpaConsoleApplication {
         try {
             RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parse(filePath);
             rizpaStockExchangeDescriptor = newRizpaStockExchangeDescriptor != null ? newRizpaStockExchangeDescriptor : rizpaStockExchangeDescriptor;
-            rizpaStockExchangeDescriptor.getRseStocks().getRseStock().forEach(System.out::println);
+            rizpaFacade.loadData(rizpaStockExchangeDescriptor);
+            enableAllOperations();
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void enableAllOperations() {
+        for(MenuItem menuItem : menu.values()) {
+            menuItem.setAvailable(true);
         }
     }
 
@@ -84,7 +103,7 @@ public class RizpaConsoleApplication {
         for (Stock stock : stocks) {
             System.out.println(stock);
             List<Transaction> stockTransactions = rizpaFacade.getTransactions(stock.getSymbol());
-            System.out.println(stockTransactions);
+            System.out.println(stockTransactions == null ? "No transactions" : stockTransactions.toString());
             // Print MAHAZOR ISKAOUT
         }
     }

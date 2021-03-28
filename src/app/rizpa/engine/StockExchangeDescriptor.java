@@ -1,10 +1,15 @@
 package app.rizpa.engine;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class StockExchangeDescriptor {
     private Stocks stocks;
+    private HashMap<String, List<Transaction>> transactions;
 
     public StockExchangeDescriptor(Stocks stocks) {
         this.stocks = stocks;
+        this.transactions = new HashMap<>();
     }
 
     public Stocks getStocks() {
@@ -13,6 +18,10 @@ public class StockExchangeDescriptor {
 
     public void setStocks(Stocks stocks) {
         this.stocks = stocks;
+    }
+
+    public List<Transaction> getStockTransactions(String symbol) {
+        return transactions.get(symbol);
     }
 
     @Override
@@ -36,4 +45,5 @@ public class StockExchangeDescriptor {
     public int hashCode() {
         return stocks != null ? stocks.hashCode() : 0;
     }
+
 }

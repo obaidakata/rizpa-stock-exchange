@@ -1,7 +1,6 @@
 package app.rizpa.engine;
 
 public class Stock {
-
     private String symbol;
     private String companyName;
     private int price;
