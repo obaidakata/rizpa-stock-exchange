@@ -8,6 +8,7 @@ import app.rizpa.engine.Transaction;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class RizpaConsoleApplication {
@@ -30,7 +31,7 @@ public class RizpaConsoleApplication {
     private void initMenu() {
         menu.put("1", new MenuItem("Read XML file", this::readFilePathUFromUser, true));
         menu.put("2", new MenuItem("Show all stocks", this::showAllStocks));
-        menu.put("3", new MenuItem("Show data about one stock", this::ShowDataAboutOneStock));
+        menu.put("3", new MenuItem("Show data about one stock", this::getStockInputFromUser));
         menu.put("4", new MenuItem("Do action", this::doAction));
         menu.put("5", new MenuItem("Show all actions", this::showALlActions));
         menu.put("6", new MenuItem("Exit", this::needToExit, true));
@@ -98,6 +99,7 @@ public class RizpaConsoleApplication {
         }
     }
 
+    //(2)
     private void showAllStocks() {
         List<Stock> stocks = rizpaFacade.getAllStocks();
         for (Stock stock : stocks) {
@@ -108,7 +110,38 @@ public class RizpaConsoleApplication {
         }
     }
 
-    private void ShowDataAboutOneStock() {
+    //(3) - Need to do the transactions part.
+    private void ShowDataAboutOneStock(String requestedStock) {
+        List<Stock> stocks = rizpaFacade.getAllStocks();
+        Boolean isExist = false;
+        for (Stock stock: stocks)
+        {
+            if(requestedStock.toUpperCase().equals(stock.getSymbol()))
+            {
+                System.out.println(stock);
+                isExist = true;
+            }
+
+            if(isExist == true)
+            {
+                break;
+            }
+        }
+
+        //todo: Transactions
+
+        if(isExist == false)
+        {
+            System.out.println("Can't find stock symbol, please enter a valid one.");
+        }
+    }
+
+    private void getStockInputFromUser()
+    {
+        System.out.println("Please enter the symbol of the stock");
+        Scanner sc = new Scanner(System.in);
+        String stockSymbol = sc.nextLine();
+        ShowDataAboutOneStock(stockSymbol);
     }
 
     private void doAction() {
