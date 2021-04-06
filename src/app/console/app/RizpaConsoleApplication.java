@@ -1,9 +1,9 @@
 package app.console.app;
 
-import app.rizpa.RizpaFacade;
 import app.console.app.generated.RizpaStockExchangeDescriptor;
 import app.engine.DealData;
 import app.engine.Stock;
+import app.rizpa.RizpaFacade;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
