@@ -42,7 +42,6 @@ public class RizpaConsoleApplication {
             else if(!isFileValid){
                 System.out.println("Operation not available, please provide XML file first.");
             }
-
         }while(!isExit);
         System.out.println("Bye Bye!");
     }
