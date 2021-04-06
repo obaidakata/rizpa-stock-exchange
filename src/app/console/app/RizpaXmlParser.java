@@ -11,7 +11,7 @@ import java.io.InputStream;
 
 public class RizpaXmlParser implements Parser{
 
-    private final String JAXB_XML_PACKAGE_NAME = "app.rizpa.console.app.generated";
+    private final String JAXB_XML_PACKAGE_NAME = "app.console.app.generated";
     private final String FILE_NOT_FOUND_MESSAGE = "File not found";
     private final String FILE_ISNT_XML_MESSAGE = "File format is not xml";
     private final String FILE_EXTENSTION = ".xml";
