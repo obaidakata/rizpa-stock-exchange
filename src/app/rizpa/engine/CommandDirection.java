@@ -1,6 +1,6 @@
 package app.rizpa.engine;
 
-public enum TransactionDirection {
+public enum CommandDirection {
     Buy,
     Sell
 }

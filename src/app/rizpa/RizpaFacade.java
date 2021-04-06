@@ -1,18 +1,14 @@
 package app.rizpa;
 
 import app.rizpa.console.app.generated.RizpaStockExchangeDescriptor;
-import app.rizpa.console.app.generated.RseStock;
-import app.rizpa.engine.RizpaEngine;
-import app.rizpa.engine.Stock;
-import app.rizpa.engine.StockExchangeDescriptor;
-import app.rizpa.engine.Transaction;
+import app.rizpa.engine.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RizpaFacade {
-    private final String SYMBOLS_ARE_NOT_UNIQUE = "Symbols are not unique";
-    private final String COMPANIES_NAMES_ARE_NOT_UNIQUE = "Companies names are not unique";
     private final RizpaDataConverter converter;
     private final RizpaEngine rizpaEngine;
 
@@ -21,8 +17,11 @@ public class RizpaFacade {
         this.rizpaEngine = new RizpaEngine();
     }
 
-    public List<Transaction> getTransactions(String symbol) {
-        return rizpaEngine.getStockTransactions(symbol);
+    public Collection<DealData> getTransactions(String symbol) {
+        return rizpaEngine.getStockTransactions(symbol)
+                .stream()
+                .map(Transaction::getDealData)
+                .collect(Collectors.toList());
     }
 
     public List<Stock> getAllStocks() {
@@ -36,48 +35,46 @@ public class RizpaFacade {
     }
 
     private void checkData(RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor) throws Exception {
-        if(!isAllStocksSymbolUnique(rizpaStockExchangeDescriptor)){
+        if(!rizpaEngine.isAllStocksSymbolUnique(rizpaStockExchangeDescriptor)){
+            String SYMBOLS_ARE_NOT_UNIQUE = "Symbols are not unique";
             throw new Exception(SYMBOLS_ARE_NOT_UNIQUE);
         }
-        else if(!isAllCompaniesNamesUnique(rizpaStockExchangeDescriptor)) {
+        else if(!rizpaEngine.isAllCompaniesNamesUnique(rizpaStockExchangeDescriptor)) {
+            String COMPANIES_NAMES_ARE_NOT_UNIQUE = "Companies names are not unique";
             throw new Exception(COMPANIES_NAMES_ARE_NOT_UNIQUE);
         }
     }
 
-    // TODO :Code replications
-    private boolean isAllStocksSymbolUnique(RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor) {
-        boolean isAllUnique = true;
-        try {
-            List<String> symbols = rizpaStockExchangeDescriptor
-                    .getRseStocks()
-                    .getRseStock()
-                    .stream()
-                    .map(RseStock::getRseSymbol)
-                    .collect(Collectors.toList());
-
-            if(symbols.stream().distinct().count() < symbols.size()) {
-                isAllUnique = false;
-            }
-        } catch (NullPointerException ignored) { }
-
-        return isAllUnique;
+    public void doLimitCommand(String direction, String symbol, int amount, int limit) {
+        CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
+        rizpaEngine.doLimitCommand(commandDirection, symbol, amount, limit);
     }
 
-    private boolean isAllCompaniesNamesUnique(RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor) {
-        boolean isAllUnique = true;
-        try {
-            List<String> companiesNames = rizpaStockExchangeDescriptor
-                    .getRseStocks()
-                    .getRseStock()
-                    .stream()
-                    .map(RseStock::getRseCompanyName)
-                    .collect(Collectors.toList());
+    public List<String> getAllSymbols(){
+        return rizpaEngine
+                .getAllStocks()
+                .stream()
+                .map(Stock::getSymbol)
+                .collect(Collectors.toList());
+    }
 
-            if(companiesNames.stream().distinct().count() < companiesNames.size()) {
-                isAllUnique = false;
-            }
-        } catch (NullPointerException ignored) { }
+    public List<String> getDirections() {
+        return Stream.of(CommandDirection.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
 
-        return isAllUnique;
+    public List<DealData> getSellOffers(String stockSymbol) {
+        return rizpaEngine.getSellOffers(stockSymbol)
+                .stream()
+                .map(Command::getDealData)
+                .collect(Collectors.toList());
+    }
+
+    public List<DealData> getBuyOffers(String stockSymbol) {
+        return rizpaEngine.getBuyOffers(stockSymbol)
+                .stream()
+                .map(Command::getDealData)
+                .collect(Collectors.toList());
     }
 }

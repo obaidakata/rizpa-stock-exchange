@@ -1,6 +1,6 @@
 package app.rizpa.engine;
 
-public enum TransactionType {
+public enum CommandType {
     MKT,
     LMT,
     FOK,
