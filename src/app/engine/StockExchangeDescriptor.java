@@ -1,4 +1,4 @@
-package app.rizpa.engine;
+package app.engine;
 
 import java.util.*;
 
@@ -65,7 +65,7 @@ public class StockExchangeDescriptor {
         String symbol = transactionToCommit.getSymbol();
         TreeSet<Transaction> stockTransactions = stockSymbol2transactions.get(symbol);
         if(stockTransactions != null) {
-            stockTransactions.add(transactionToCommit);
+           stockTransactions.add(transactionToCommit);
         }
         else{
             throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);

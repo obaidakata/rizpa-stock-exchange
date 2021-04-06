@@ -1,18 +1,13 @@
-package app.rizpa.console.app;
+package app.console.app;
 
-import app.rizpa.console.app.generated.RizpaStockExchangeDescriptor;
-import app.rizpa.console.app.generated.RseStock;
+import app.console.app.generated.RizpaStockExchangeDescriptor;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RizpaXmlParser implements Parser{
 

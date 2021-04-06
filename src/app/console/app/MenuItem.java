@@ -1,6 +1,4 @@
-package app.rizpa.console.app;
-
-import java.util.function.Consumer;
+package app.console.app;
 
 public class MenuItem {
     private final String actionName;

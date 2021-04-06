@@ -1,7 +1,7 @@
 package app.rizpa;
 
-import app.rizpa.console.app.generated.RizpaStockExchangeDescriptor;
-import app.rizpa.engine.*;
+import app.console.app.generated.RizpaStockExchangeDescriptor;
+import app.engine.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,12 +50,9 @@ public class RizpaFacade {
         rizpaEngine.doLimitCommand(commandDirection, symbol, amount, limit);
     }
 
-    public List<String> getAllSymbols(){
-        return rizpaEngine
-                .getAllStocks()
-                .stream()
-                .map(Stock::getSymbol)
-                .collect(Collectors.toList());
+    public Collection<String> getAllSymbols(){
+        return rizpaEngine.getAllSymbols();
+
     }
 
     public List<String> getDirections() {
@@ -65,16 +62,31 @@ public class RizpaFacade {
     }
 
     public List<DealData> getSellOffers(String stockSymbol) {
-        return rizpaEngine.getSellOffers(stockSymbol)
-                .stream()
-                .map(Command::getDealData)
-                .collect(Collectors.toList());
+        return rizpaEngine.getSellOffers(stockSymbol);
     }
 
-    public List<DealData> getBuyOffers(String stockSymbol) {
-        return rizpaEngine.getBuyOffers(stockSymbol)
-                .stream()
-                .map(Command::getDealData)
-                .collect(Collectors.toList());
+    public Collection<DealData> getBuyOffers(String stockSymbol) {
+        return rizpaEngine.getBuyOffers(stockSymbol);
+    }
+
+    public int getTranscationsCount(String symbol) {
+        Collection<Transaction> transactions = rizpaEngine.getStockTransactions(symbol);
+        return transactions != null? transactions.size() : 0;
+    }
+
+    public Stock getStockBySymbol(String symbol) {
+        return rizpaEngine.getStockBySymbol(symbol);
+    }
+
+    public int getSumSellOffers(String stockSymbol) {
+        return rizpaEngine.getSumSellOffers(stockSymbol);
+    }
+
+    public int getSumBuyOffers(String stockSymbol) {
+        return rizpaEngine.getSumBuyOffers(stockSymbol);
+    }
+
+    public int getSumTransactions(String stockSymbol) {
+        return rizpaEngine.getSumTransactions(stockSymbol);
     }
 }

@@ -1,6 +1,6 @@
-package app.rizpa.console.app;
+package app.console.app;
 
-import app.rizpa.console.app.generated.RizpaStockExchangeDescriptor;
+import app.console.app.generated.RizpaStockExchangeDescriptor;
 
 public interface Parser {
     RizpaStockExchangeDescriptor parse(String filePath) throws Exception;

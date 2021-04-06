@@ -6,7 +6,7 @@
 //
 
 
-package app.rizpa.console.app.generated;
+package app.console.app.generated;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;

@@ -1,38 +1,40 @@
-package app.rizpa.engine;
+package app.engine;
 
 public class Stock {
-    private String symbol;
-    private String companyName;
+    private final String symbol;
+    private final String companyName;
     private int price;
+    private long sumOfAllTransactions = 0;
+    private static int longestSymbolLength = 0;
+    private static int longestCompanyLength = 0;
 
     public Stock(String symbol, String companyName, int price) {
         this.symbol = symbol;
         this.companyName = companyName;
         this.price = price;
+        longestSymbolLength = Math.max(longestSymbolLength, symbol.length());
+        longestCompanyLength = Math.max(longestCompanyLength, companyName.length());
     }
 
     public String getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
     public String getCompanyName() {
         return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 
     public int getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public long getSumOfAllTransactions() {
+        return sumOfAllTransactions;
+    }
+
+    public void commitDeal(int price, int amount) {
         this.price = price;
+        sumOfAllTransactions += (long) price * amount;
     }
 
     @Override
@@ -63,4 +65,14 @@ public class Stock {
         result = 31 * result + price;
         return result;
     }
+
+    public static int getLongestSymbolLength() {
+        return longestSymbolLength;
+    }
+
+    public static int getLongestCompanyLength() {
+        return longestCompanyLength;
+    }
+
+
 }

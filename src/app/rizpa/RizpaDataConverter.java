@@ -1,11 +1,11 @@
 package app.rizpa;
 
-import app.rizpa.console.app.generated.RizpaStockExchangeDescriptor;
-import app.rizpa.console.app.generated.RseStock;
-import app.rizpa.console.app.generated.RseStocks;
-import app.rizpa.engine.Stock;
-import app.rizpa.engine.StockExchangeDescriptor;
-import app.rizpa.engine.Stocks;
+import app.console.app.generated.RizpaStockExchangeDescriptor;
+import app.console.app.generated.RseStock;
+import app.console.app.generated.RseStocks;
+import app.engine.Stock;
+import app.engine.StockExchangeDescriptor;
+import app.engine.Stocks;
 
 import java.util.ArrayList;
 import java.util.List;

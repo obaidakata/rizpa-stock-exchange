@@ -1,4 +1,4 @@
-package app.rizpa.engine;
+package app.engine;
 
 import java.util.Date;
 
@@ -50,7 +50,7 @@ public  class Command{
     }
 
     public int getCurrentStockPrice() {
-        return dealData.getCurrentStockPrice();
+        return dealData.getDealPrice();
     }
 
     public void commit(int amount) {

@@ -1,4 +1,4 @@
-package app.rizpa.engine;
+package app.engine;
 
 public enum CommandDirection {
     Buy,

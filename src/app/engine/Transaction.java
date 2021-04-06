@@ -1,4 +1,4 @@
-package app.rizpa.engine;
+package app.engine;
 
 import java.util.Date;
 
@@ -24,7 +24,7 @@ public class Transaction implements Comparable<Transaction>{
 
         Transaction that = (Transaction) o;
 
-        return dealData != null ? dealData.equals(that.dealData) : that.dealData == null;
+        return dealData.equals(that.dealData);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Transaction implements Comparable<Transaction>{
 
     @Override
     public int compareTo(Transaction o) {
-        return dealData.getTimeStamp().compareTo(o.dealData.getTimeStamp());
+        return dealData.compareTo(o.dealData);
     }
 
     public String getSymbol() {
