@@ -35,8 +35,6 @@ public class RizpaXmlParser implements Parser{
             rizpaStockExchangeDescriptor = deserializeFrom(inputStream);
         }
 
-        //Move to the engine
-
         return rizpaStockExchangeDescriptor;
     }
 

@@ -20,11 +20,12 @@ public class RizpaEngine {
         List<Stock> stocks = null;
         if (descriptor != null) {
             Stocks stocks1 = descriptor.getStocks();
-            if(stocks1 != null) {
+            if (stocks1 != null) {
                 stocks = descriptor.getStocks().getStocks();
             }
         }
-        else{
+
+        if (stocks == null) {
             stocks = new ArrayList<>();
         }
 
@@ -32,7 +33,16 @@ public class RizpaEngine {
     }
 
     public Collection<Transaction> getStockTransactions(String symbol) {
-        return descriptor.getStockTransactions(symbol);
+        Collection<Transaction> transactions = null;
+        if (descriptor != null) {
+            transactions = descriptor.getStockTransactions(symbol);
+        }
+
+        if(transactions == null){
+            transactions = new ArrayList<>();
+        }
+
+        return transactions;
     }
 
     public void doLimitCommand(CommandDirection direction, String symbol, int amount, int limit) {
@@ -41,14 +51,13 @@ public class RizpaEngine {
 
         Collection<Command> buyCommands = descriptor.getBuyOffers(stockSymbol);
         Collection<Command> sellCommands = descriptor.getSellOffers(stockSymbol);
-        Collection<Command> matchWith = null;
-        Collection<Command> toAddTo = null;
+        Collection<Command> matchWith;
+        Collection<Command> toAddTo;
 
-        if(direction == CommandDirection.Buy) {
+        if (direction == CommandDirection.Buy) {
             matchWith = sellCommands;
             toAddTo = buyCommands;
-        }
-        else{
+        } else {
             matchWith = buyCommands;
             toAddTo = sellCommands;
         }
@@ -56,10 +65,10 @@ public class RizpaEngine {
         matchCommand(newCommand, matchWith, toAddTo);
     }
 
-    private void matchCommand(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand){
+    private void matchCommand(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand) {
         String symbol = commandToMatch.getStockSymbol();
         for (Command command : commands) {
-            if(commandToMatch.canCommitPurchase(command)) {
+            if (commandToMatch.canCommitPurchase(command)) {
                 int transactionStockAmount = Math.min(command.getStocksAmount(), commandToMatch.getStocksAmount());
                 command.commit(transactionStockAmount);
                 commandToMatch.commit(transactionStockAmount);
@@ -68,13 +77,12 @@ public class RizpaEngine {
                 descriptor.committedTransaction(deal);
                 Stock stock = getStockBySymbol(symbol);
                 stock.commitDeal(dealPrice, transactionStockAmount);
-            }
-            else if(commandToMatch.getStocksAmount() == 0) {
+            } else if (commandToMatch.getStocksAmount() == 0) {
                 break;
             }
         }
-        commands.removeIf( command -> command.getStocksAmount() == 0);
-        if(commandToMatch.getStocksAmount() > 0){
+        commands.removeIf(command -> command.getStocksAmount() == 0);
+        if (commandToMatch.getStocksAmount() > 0) {
             whereToTheNewCommand.add(commandToMatch);
         }
     }
@@ -101,7 +109,8 @@ public class RizpaEngine {
                     .collect(Collectors.toList());
 
             isSymbolsUnique = areStringsUnique(symbols);
-        } catch (NullPointerException ignored) { }
+        } catch (NullPointerException ignored) {
+        }
 
         return isSymbolsUnique;
     }
@@ -117,7 +126,8 @@ public class RizpaEngine {
                     .collect(Collectors.toList());
 
             isNamesUnique = areStringsUnique(companiesNames);
-        } catch (NullPointerException ignored) { }
+        } catch (NullPointerException ignored) {
+        }
 
         return isNamesUnique;
     }
@@ -151,7 +161,7 @@ public class RizpaEngine {
     }
 
     public Collection<String> getAllSymbols() {
-        return  getAllStocks()
+        return getAllStocks()
                 .stream()
                 .map(Stock::getSymbol)
                 .collect(Collectors.toList());

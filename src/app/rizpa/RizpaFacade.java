@@ -69,7 +69,7 @@ public class RizpaFacade {
         return rizpaEngine.getBuyOffers(stockSymbol);
     }
 
-    public int getTranscationsCount(String symbol) {
+    public int getTransactionsCount(String symbol) {
         Collection<Transaction> transactions = rizpaEngine.getStockTransactions(symbol);
         return transactions != null? transactions.size() : 0;
     }

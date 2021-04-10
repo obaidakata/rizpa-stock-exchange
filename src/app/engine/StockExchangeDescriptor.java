@@ -39,28 +39,6 @@ public class StockExchangeDescriptor {
         return transactions;
     }
 
-    public void addBuyOffer(Command command) {
-        TreeSet<Command> buyCommands =  stockSymbol2BuyOffers.get(command.getStockSymbol());
-        if(buyCommands != null){
-            buyCommands.add(command);
-        }
-        else {
-            throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
-        }
-
-    }
-
-    public void addSellOffer(Command command) {
-        String symbol = command.getStockSymbol();
-        TreeSet<Command> sellOffers = stockSymbol2SellOffers.get(symbol);
-        if(sellOffers != null) {
-            sellOffers.add(command);
-        }
-        else {
-            throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
-        }
-    }
-
     public void committedTransaction(Transaction transactionToCommit){
         String symbol = transactionToCommit.getSymbol();
         TreeSet<Transaction> stockTransactions = stockSymbol2transactions.get(symbol);

@@ -17,9 +17,8 @@ public class RizpaConsoleApplication {
     private final RizpaFacade rizpaFacade;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
     private RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor = null;
-    private final String DEAL_DATA_FORMAT = "| %-12s | %10d | %10d | %17d |%n";
+    private final String DEAL_DATA_FORMAT = "| %-12s | %10d | %10d | %10d |%n";
     private final String TITLE_FORMAT = DEAL_DATA_FORMAT.replace("d", "s");
-    private String stockFormat = "| %-5s | %-12s | %-10d | %-10d |%n";
     private boolean isFileValid = false;
 
     public RizpaConsoleApplication() {
@@ -76,7 +75,7 @@ public class RizpaConsoleApplication {
         List<Stock> stocks = rizpaFacade.getAllStocks();
         int companyNameLength = Math.max(Stock.getLongestSymbolLength(), 12);
         int symbolLength = Math.max(Stock.getLongestSymbolLength(), 7);
-        stockFormat = "| %"+ -symbolLength + "s |" +
+        String stockFormat = "| %" + -symbolLength + "s |" +
                 " %" + -companyNameLength + "s | %-10d | %-22d | %-25d |%n";
         String stockTitleFormat = stockFormat.replace("d", "s");
         int linLength = companyNameLength + symbolLength  + 72;
@@ -143,16 +142,25 @@ public class RizpaConsoleApplication {
             System.out.printf("\t\t\t\t%d - Stock symbol \"%s\" \n", i++, stockSymbol);
             System.out.println("\nBuy offers list");
             printDeals(rizpaFacade.getBuyOffers(stockSymbol));
+            printDataInBox("Buy offers Total", rizpaFacade.getSumBuyOffers(stockSymbol));
 
             System.out.println("\nSell offers list");
             printDeals(rizpaFacade.getSellOffers(stockSymbol));
+            printDataInBox("Sell offers Total", rizpaFacade.getSumSellOffers(stockSymbol));
 
             System.out.println("\nTransactions list");
             printDeals(rizpaFacade.getTransactions(stockSymbol));
-            System.out.println(rizpaFacade.getSumBuyOffers(stockSymbol));
-            System.out.println(rizpaFacade.getSumSellOffers(stockSymbol));
-            System.out.println(rizpaFacade.getSumTransactions(stockSymbol));
+            printDataInBox("Transactions Total", rizpaFacade.getSumTransactions(stockSymbol));
         }
+    }
+
+    private void printDataInBox(String dataName, int data){
+        int dataNameLength =  dataName.length();
+        int width = dataNameLength + 17;
+        String s = String.join("", Collections.nCopies(width, "-"));
+        System.out.println(s);
+        System.out.printf("| %"  +  -dataNameLength + "s : %10d |%n", dataName, data);
+        System.out.println(s);
     }
 
     private void needToExit() {
@@ -192,11 +200,12 @@ public class RizpaConsoleApplication {
                     stockToPrint.getSymbol(),
                     stockToPrint.getCompanyName(),
                     stockToPrint.getPrice(),
-                    rizpaFacade.getTranscationsCount(stockToPrint.getSymbol()),
+                    rizpaFacade.getTransactionsCount(stockToPrint.getSymbol()),
                     stockToPrint.getSumOfAllTransactions());
         }
     }
 
+    //Move to facade
     private boolean isInputPositiveInteger(String amountToCheck) {
         Integer amountAsInt = null;
         try {
@@ -236,9 +245,9 @@ public class RizpaConsoleApplication {
     }
 
     private void printDeals(Collection<DealData> deals) {
-        String s = String.join("", Collections.nCopies(62, "-"));
+        String s = String.join("", Collections.nCopies(55, "-"));
         System.out.println(s);
-        System.out.printf(TITLE_FORMAT, "Time stamp", "amount", "price", "transaction value");
+        System.out.printf(TITLE_FORMAT, "Time stamp", "amount", "price", "value");
         System.out.println(s);
         for (DealData deal : deals) {
             printDealData(deal);

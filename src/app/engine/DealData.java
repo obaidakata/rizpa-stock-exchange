@@ -6,7 +6,6 @@ import java.util.Date;
 public class DealData implements Comparable<DealData>{
     private static long idGenerator = 0;
     private final long id;
-    private int dealPrice;
     private final String symbol;
     private final int price;
     private int amount;
@@ -19,11 +18,10 @@ public class DealData implements Comparable<DealData>{
         this.price = price;
         this.amount = amount;
         this.timeStamp = timeStamp;
-        this.dealPrice = this.amount * this.price;
     }
 
     public int getDealPrice() {
-        return dealPrice;
+        return amount * price;
     }
 
     public String getSymbol() {
@@ -50,7 +48,6 @@ public class DealData implements Comparable<DealData>{
         DealData dealData = (DealData) o;
 
         if (id != dealData.id) return false;
-        if (dealPrice != dealData.dealPrice) return false;
         if (price != dealData.price) return false;
         if (amount != dealData.amount) return false;
         if (symbol != null ? !symbol.equals(dealData.symbol) : dealData.symbol != null) return false;
@@ -60,7 +57,6 @@ public class DealData implements Comparable<DealData>{
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + dealPrice;
         result = 31 * result + (symbol != null ? symbol.hashCode() : 0);
         result = 31 * result + price;
         result = 31 * result + amount;
@@ -71,7 +67,7 @@ public class DealData implements Comparable<DealData>{
     @Override
     public String toString() {
         return "StockData{" +
-                ", currentStockPrice=" + dealPrice +
+                ", currentStockPrice=" + getDealPrice() +
                 ", symbol='" + symbol + '\'' +
                 ", price=" + price +
                 ", amount=" + amount +
@@ -82,7 +78,6 @@ public class DealData implements Comparable<DealData>{
     public void commit(int amount) {
         if(this.amount >= amount) {
             this.amount -= amount;
-            dealPrice = this.amount * this.price;
         }
     }
 
