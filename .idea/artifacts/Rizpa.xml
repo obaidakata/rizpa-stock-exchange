@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Rizpa">
+    <output-path>$PROJECT_DIR$/out/artifacts/Rizpa</output-path>
+    <root id="archive" name="Rizpa.jar" />
+  </artifact>
+</component>
