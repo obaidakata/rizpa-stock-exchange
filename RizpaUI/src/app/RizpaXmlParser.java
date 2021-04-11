@@ -43,7 +43,4 @@ public class RizpaXmlParser implements Parser{
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         return (RizpaStockExchangeDescriptor) unmarshaller.unmarshal(in);
     }
-
-
-
 }
