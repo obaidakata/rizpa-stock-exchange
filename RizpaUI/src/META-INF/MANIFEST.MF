@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: app.Main
-Class-Path: Rizpa.jar RizpaEngine.jar
+Class-Path: Rizpa.jar
+

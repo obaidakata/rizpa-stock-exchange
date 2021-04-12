@@ -1,10 +1,10 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="RizpaUI:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/RizpaUI_jar</output-path>
-    <root id="archive" name="RizpaUI.jar">
-      <element id="module-output" name="RizpaUI" />
-      <element id="module-output" name="Rizpa" />
-      <element id="module-output" name="RizpaEngine" />
+  <artifact name="RizpaUI:jar">
+    <output-path>$PROJECT_DIR$/batch</output-path>
+    <root id="root">
+      <element id="archive" name="RizpaUI.jar">
+        <element id="module-output" name="RizpaUI" />
+      </element>
     </root>
   </artifact>
 </component>
