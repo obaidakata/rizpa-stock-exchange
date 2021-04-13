@@ -9,8 +9,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="RizpaEngine" />
     <orderEntry type="module" module-name="RizpaUI" />
-    <orderEntry type="module-library" exported="">
-      <library>
+    <orderEntry type="module-library">
+      <library name="Rizpa">
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/gson-2.1.jar!/" />
         </CLASSES>
@@ -18,5 +18,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="gson-2.1" level="project" />
   </component>
 </module>
