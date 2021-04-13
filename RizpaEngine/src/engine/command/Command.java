@@ -1,11 +1,22 @@
-package engine;
+package engine.command;
 
+import engine.DealData;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
-public  class Command{
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public  class Command implements Comparable<Command>{
     private DealData dealData;
-    private final CommandDirection direction;
-    private final CommandType type;
+    private CommandDirection direction;
+    private CommandType type;
+
+    public Command() {
+    }
 
     public Command(String stockSymbol,
                    CommandDirection direction,
@@ -110,5 +121,10 @@ public  class Command{
                 ", direction=" + direction +
                 ", type=" + type +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Command o) {
+        return 0;
     }
 }

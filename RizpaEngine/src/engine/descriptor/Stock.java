@@ -1,12 +1,29 @@
-package engine;
+package engine.descriptor;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Stock {
-    private final String symbol;
-    private final String companyName;
+
+    @XmlElement
+    private String symbol;
+    @XmlElement
+    private String companyName;
+    @XmlElement
     private int price;
+    @XmlElement
     private long sumOfAllTransactions = 0;
+    @XmlElement
     private static int longestSymbolLength = 0;
+    @XmlElement
     private static int longestCompanyLength = 0;
+
+    private Stock() {
+    }
 
     public Stock(String symbol, String companyName, int price) {
         this.symbol = symbol;
@@ -31,6 +48,8 @@ public class Stock {
     public long getSumOfAllTransactions() {
         return sumOfAllTransactions;
     }
+
+
 
     public void commitDeal(int price, int amount) {
         this.price = price;

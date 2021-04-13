@@ -1,28 +1,32 @@
 package app;
 
-import app.generated.RizpaStockExchangeDescriptor;
 import engine.DealData;
-import engine.Stock;
+import engine.descriptor.Stock;
 import rizpa.RizpaFacade;
+import rizpa.generated.*;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 
+@XmlRootElement
 public class RizpaConsoleApplication {
-    private final Parser parser;
     private final HashMap<String, MenuItem> menu;
-    private boolean isExit = false;
     private final Scanner scanner;
-    private final RizpaFacade rizpaFacade;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
-    private RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor = null;
     private final String DEAL_DATA_FORMAT = "| %-12s | %10d | %10d | %10d |%n";
     private final String TITLE_FORMAT = DEAL_DATA_FORMAT.replace("d", "s");
+
+    private boolean isExit = false;
+    private boolean isReturn = false;
     private boolean isFileValid = false;
+    private RizpaFacade rizpaFacade;
+
+
 
     public RizpaConsoleApplication() {
-        parser = new RizpaXmlParser();
         menu = new HashMap<>();
         scanner = new Scanner(System.in);
         rizpaFacade = new RizpaFacade();
@@ -31,44 +35,89 @@ public class RizpaConsoleApplication {
 
     public void run() {
         do {
-            printMenu();
-            MenuItem menuItem = getUserChoice();
+            printMenu(menu);
+            MenuItem menuItem = getUserChoiceForMenu(menu);
             if(menuItem != null) {
                 System.out.println();
                 menuItem.getAction().run();
                 System.out.println();
             }
             else if(!isFileValid){
-                System.out.println("Operation not available, please provide XML file first.");
+                System.out.println("Operation not available, please load system data first.");
             }
         }while(!isExit);
         System.out.println("Bye Bye!");
     }
 
+    HashMap<String , MenuItem> readFileMenu = new HashMap<>();
+
     private void initMenu() {
-        menu.put("1", new MenuItem("Read XML file", this::readFilePathUFromUser, true));
+        menu.put("1", new MenuItem("Load system data", this::loadSystemData, true));
+        readFileMenu.put("1", new MenuItem("Load new data from XML file", this::loadXML, true));
+        readFileMenu.put("2", new MenuItem("Load previous data", this::loadPreviousData, true));
+        readFileMenu.put("3", new MenuItem("Return", this::needToReturn, true));
+
         menu.put("2", new MenuItem("Show all stocks", this::showAllStocks));
         menu.put("3", new MenuItem("Show data about one stock", this::printOneStockDetailsBasedOnUserChoice));
         menu.put("4", new MenuItem("Do transaction", this::doTransaction));
         menu.put("5", new MenuItem("Show all actions", this::showALlActions));
-        menu.put("6", new MenuItem("Exit", this::needToExit, true));
+        menu.put("6", new MenuItem("Save all data to file", this::saveAllData, false));
+        menu.put("7", new MenuItem("Exit", this::needToExit, true));
+    }
+
+    private void saveAllData() {
+        System.out.println("Please type file path where you want to save the file");
+        String filePath = scanner.nextLine();
+        try {
+            String path  = rizpaFacade.saveAllData(filePath);
+            System.out.println("Data saved successfully path: " + path);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void needToReturn() {
+        isReturn = true;
     }
 
     //menu items
 
-    private void readFilePathUFromUser(){
+    private void loadPreviousData(){
         System.out.println("Please type file path");
         String filePath = scanner.nextLine();
         try {
-            RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parse(filePath);
-            rizpaStockExchangeDescriptor = newRizpaStockExchangeDescriptor != null ? newRizpaStockExchangeDescriptor : rizpaStockExchangeDescriptor;
-            rizpaFacade.loadData(rizpaStockExchangeDescriptor);
+            rizpaFacade.loadPreviousData(filePath);
             enableAllOperations();
             isFileValid = true;
             System.out.println("File loaded successfully");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void loadXML(){
+        System.out.println("Please type file path");
+        String filePath = scanner.nextLine();
+        try {
+            rizpaFacade.loadNewData(filePath);
+            enableAllOperations();
+            isFileValid = true;
+            System.out.println("File loaded successfully");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void loadSystemData(){
+        do {
+            printMenu(readFileMenu);
+            MenuItem menuItem = getUserChoiceForMenu(readFileMenu);
+            if(menuItem != null) {
+                System.out.println();
+                menuItem.getAction().run();
+                System.out.println();
+            }
+        }while(!(isReturn || isFileValid));
     }
 
     private void showAllStocks() {
@@ -169,20 +218,20 @@ public class RizpaConsoleApplication {
 
     //Other methods
 
-    private void printMenu() {
-        for (String menuItem : menu.keySet()){
-            System.out.printf("%s) %s\n", menuItem, menu.get(menuItem).getActionName());
+    private void printMenu(HashMap<String, MenuItem> providedMenu) {
+        for (String menuItem : providedMenu.keySet()){
+            System.out.printf("%s) %s\n", menuItem, providedMenu.get(menuItem).getActionName());
         }
     }
 
-    private MenuItem getUserChoice() {
+    private MenuItem getUserChoiceForMenu(HashMap<String, MenuItem> providedMenu) {
         String userChoice = scanner.nextLine();
-        MenuItem menuItem = menu.get(userChoice);
+        MenuItem menuItem = providedMenu.get(userChoice);
         if(menuItem != null) {
             menuItem = menuItem.isAvailable() ? menuItem : null;
         }
         else {
-            System.out.println("Type one of " + menu.keySet().toString());
+            System.out.println("Type one of " + providedMenu.keySet());
         }
 
         return menuItem;
@@ -266,5 +315,25 @@ public class RizpaConsoleApplication {
                 deal.getAmount(),
                 deal.getPrice(),
                 deal.getDealPrice());
+    }
+
+    @XmlElement
+    public void setExit(boolean exit) {
+        isExit = exit;
+    }
+
+    @XmlElement
+    public void setReturn(boolean aReturn) {
+        isReturn = aReturn;
+    }
+
+    @XmlElement
+    public void setFileValid(boolean fileValid) {
+        isFileValid = fileValid;
+    }
+
+    @XmlElement
+    public void setRizpaFacade(RizpaFacade rizpaFacade) {
+        this.rizpaFacade = rizpaFacade;
     }
 }

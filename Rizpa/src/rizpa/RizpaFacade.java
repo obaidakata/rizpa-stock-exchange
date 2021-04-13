@@ -1,20 +1,38 @@
 package rizpa;
 
-import app.generated.RizpaStockExchangeDescriptor;
+import app.RizpaConsoleApplication;
 import engine.*;
+import engine.command.Command;
+import engine.command.CommandDirection;
+import engine.command.CommandTressSet;
+import engine.command.CommandType;
+import engine.descriptor.Commands;
+import engine.descriptor.Stock;
+import engine.descriptor.StockExchangeDescriptor;
+import rizpa.generated.RizpaStockExchangeDescriptor;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RizpaFacade {
     private final RizpaDataConverter converter;
+    private final RizpaXmlParser parser;
+
     private final RizpaEngine rizpaEngine;
 
     public RizpaFacade() {
         this.converter = new RizpaDataConverter();
         this.rizpaEngine = new RizpaEngine();
+        this.parser =new RizpaXmlParser();
     }
 
     public Collection<DealData> getTransactions(String symbol) {
@@ -28,10 +46,11 @@ public class RizpaFacade {
         return rizpaEngine.getAllStocks();
     }
 
-    public void loadData(RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor) throws Exception {
-        StockExchangeDescriptor descriptor = converter.convert(rizpaStockExchangeDescriptor);
+    public void loadNewData(String filePath) throws Exception {
+        RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parseOldData(filePath);
+        StockExchangeDescriptor descriptor = converter.convert(newRizpaStockExchangeDescriptor);
         checkData(descriptor);
-        rizpaEngine.loadData(descriptor);
+        rizpaEngine.loadNewData(descriptor);
     }
 
     private void checkData(StockExchangeDescriptor descriptor) throws Exception {
@@ -88,5 +107,14 @@ public class RizpaFacade {
 
     public int getSumTransactions(String stockSymbol) {
         return rizpaEngine.getSumTransactions(stockSymbol);
+    }
+
+
+    public String saveAllData(String fileName) throws Exception {
+        return parser.saveAllData(fileName, rizpaEngine.getDescriptor());
+    }
+
+    public void loadPreviousData(String fileName) throws Exception {
+        rizpaEngine.setDescriptor(parser.loadPreviousData(fileName));
     }
 }

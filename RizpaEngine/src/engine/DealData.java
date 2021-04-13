@@ -1,16 +1,25 @@
 package engine;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DealData implements Comparable<DealData>{
     private static long idGenerator = 0;
-    private final long id;
-    private final String symbol;
-    private final int price;
+    private  long id;
+    private  String symbol;
+    private  int price;
     private int amount;
-    private final Date timeStamp;
+    private  Date timeStamp;
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+
+    private DealData() {
+    }
 
     public DealData(String symbol, int price, int amount, Date timeStamp) {
         this.id = idGenerator++;
@@ -39,6 +48,8 @@ public class DealData implements Comparable<DealData>{
     public Date getTimeStamp() {
         return timeStamp;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

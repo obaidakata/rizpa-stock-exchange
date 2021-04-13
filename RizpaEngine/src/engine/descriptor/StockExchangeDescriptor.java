@@ -1,19 +1,30 @@
-package engine;
+package engine.descriptor;
 
+import engine.command.Command;
+import engine.Transaction;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class StockExchangeDescriptor {
     private Stocks stocks;
-    private final HashMap<String, TreeSet<Command>> stockSymbol2BuyOffers;
-    private final HashMap<String, TreeSet<Command>> stockSymbol2SellOffers;
-    private final HashMap<String, TreeSet<Transaction>> stockSymbol2transactions;
+    private Commands stockSymbol2BuyOffers;
+    private Commands stockSymbol2SellOffers;
+    private Transactions stockSymbol2transactions;
     private final String SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE = "Symbol not found";
+
+    private StockExchangeDescriptor() {
+    }
 
     public StockExchangeDescriptor(Stocks stocks) {
         this.stocks = stocks;
-        this.stockSymbol2BuyOffers = new HashMap<>();
-        this.stockSymbol2SellOffers = new HashMap<>();
-        this.stockSymbol2transactions = new HashMap<>();
+        this.stockSymbol2BuyOffers = new Commands();
+        this.stockSymbol2SellOffers = new Commands();
+        this.stockSymbol2transactions = new Transactions();
         for(Stock stock : stocks.getStocks()) {
             String symbol = stock.getSymbol();
             this.stockSymbol2transactions.put(symbol, new TreeSet<>());
@@ -51,21 +62,11 @@ public class StockExchangeDescriptor {
     }
 
     public Collection<Command> getSellOffers(String symbol) {
-        TreeSet<Command> sellOffers = stockSymbol2SellOffers.get(symbol);
-        if(sellOffers != null){
-            return  sellOffers;
-        }
-
-        throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
+        return stockSymbol2SellOffers.getSellOffers(symbol);
     }
 
     public Collection<Command> getBuyOffers(String symbol) {
-        TreeSet<Command> buyOffers = stockSymbol2BuyOffers.get(symbol);
-        if(buyOffers != null) {
-            return buyOffers;
-        }
-
-        throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
+        return stockSymbol2BuyOffers.getBuyOffers(symbol);
     }
 
     @Override
@@ -88,5 +89,9 @@ public class StockExchangeDescriptor {
     @Override
     public int hashCode() {
         return stocks != null ? stocks.hashCode() : 0;
+    }
+
+    public Commands get() {
+        return stockSymbol2BuyOffers;
     }
 }

@@ -1,4 +1,4 @@
-package engine;
+package engine.command;
 
 public enum CommandDirection {
     Buy,

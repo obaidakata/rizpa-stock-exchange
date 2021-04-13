@@ -6,7 +6,7 @@
 //
 
 
-package app.generated;
+package rizpa.generated;
 
 import java.util.ArrayList;
 import java.util.List;

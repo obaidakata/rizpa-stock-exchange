@@ -1,5 +1,12 @@
 package engine;
 
+import engine.command.Command;
+import engine.command.CommandDirection;
+import engine.command.CommandType;
+import engine.descriptor.Stock;
+import engine.descriptor.StockExchangeDescriptor;
+import engine.descriptor.Stocks;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -9,7 +16,7 @@ import java.util.stream.Collectors;
 public class RizpaEngine {
     private StockExchangeDescriptor descriptor;
 
-    public void loadData(StockExchangeDescriptor descriptor) {
+    public void loadNewData(StockExchangeDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 
@@ -134,19 +141,33 @@ public class RizpaEngine {
     }
 
     public Collection<DealData> getBuyOffers(String stockSymbol) {
-        return descriptor
-                .getBuyOffers(stockSymbol)
-                .stream()
-                .map(Command::getDealData)
-                .collect(Collectors.toList());
+        Collection<Command> buyOffers = descriptor.getBuyOffers(stockSymbol);
+        Collection<DealData> buyOffersDeals;
+        if(buyOffers == null){
+            buyOffersDeals = new ArrayList<>();
+        }
+        else{
+            buyOffersDeals = buyOffers
+                    .stream()
+                    .map(Command::getDealData)
+                    .collect(Collectors.toList());
+        }
+        return buyOffersDeals;
     }
 
     public List<DealData> getSellOffers(String stockSymbol) {
-        return descriptor
-                .getSellOffers(stockSymbol)
-                .stream()
-                .map(Command::getDealData)
-                .collect(Collectors.toList());
+        Collection<Command> sellOffers = descriptor.getSellOffers(stockSymbol);
+        List<DealData> sellOffersDeals;
+        if(sellOffers == null){
+            sellOffersDeals = new ArrayList<>();
+        }
+        else{
+            sellOffersDeals = sellOffers
+                    .stream()
+                    .map(Command::getDealData)
+                    .collect(Collectors.toList());
+        }
+        return sellOffersDeals;
     }
 
     public Stock getStockBySymbol(String symbol) {
@@ -183,5 +204,13 @@ public class RizpaEngine {
                 .stream()
                 .map(transaction -> transaction.getDealData().getDealPrice())
                 .reduce(0, Integer::sum);
+    }
+
+    public StockExchangeDescriptor getDescriptor() {
+        return descriptor;
+    }
+
+    public void setDescriptor(StockExchangeDescriptor descriptor) {
+        this.descriptor = descriptor;
     }
 }
