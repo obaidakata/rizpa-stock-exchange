@@ -3,13 +3,13 @@ package engine;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DealData implements Comparable<DealData>{
+public class DealData implements Comparable<DealData> {
     private static long idGenerator = 0;
-    private  long id;
-    private  String symbol;
-    private  int price;
+    private long id;
+    private String symbol;
+    private int price;
     private int amount;
-    private  Date timeStamp;
+    private Date timeStamp;
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
 
     public DealData(String symbol, int price, int amount, Date timeStamp) {
@@ -39,7 +39,6 @@ public class DealData implements Comparable<DealData>{
     public Date getTimeStamp() {
         return timeStamp;
     }
-
 
 
     @Override
@@ -78,7 +77,7 @@ public class DealData implements Comparable<DealData>{
     }
 
     public void commit(int amount) {
-        if(this.amount >= amount) {
+        if (this.amount >= amount) {
             this.amount -= amount;
         }
     }

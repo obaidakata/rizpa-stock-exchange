@@ -2,7 +2,7 @@ package engine;
 
 import java.util.Date;
 
-public class Transaction implements Comparable<Transaction>{
+public class Transaction implements Comparable<Transaction> {
     private final DealData dealData;
 
     public Transaction(String symbol,

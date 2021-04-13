@@ -2,7 +2,7 @@ package engine.descriptor;
 
 import java.util.List;
 
-public class Stocks{
+public class Stocks {
     private List<Stock> stocks;
 
     public Stocks(List<Stock> stocks) {

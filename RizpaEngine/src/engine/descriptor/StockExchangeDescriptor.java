@@ -1,13 +1,15 @@
 package engine.descriptor;
 
-import engine.command.Command;
 import engine.Transaction;
+import engine.command.Command;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.TreeSet;
 
 public class StockExchangeDescriptor {
     private Stocks stocks;
-    private HashMap<String, TreeSet<Command>>  stockSymbol2BuyOffers;
+    private HashMap<String, TreeSet<Command>> stockSymbol2BuyOffers;
     private HashMap<String, TreeSet<Command>> stockSymbol2SellOffers;
     private HashMap<String, TreeSet<Transaction>> stockSymbol2transactions;
     private final String SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE = "Symbol not found";
@@ -17,7 +19,7 @@ public class StockExchangeDescriptor {
         this.stockSymbol2BuyOffers = new HashMap<>();
         this.stockSymbol2SellOffers = new HashMap<>();
         this.stockSymbol2transactions = new HashMap<>();
-        for(Stock stock : stocks.getStocks()) {
+        for (Stock stock : stocks.getStocks()) {
             String symbol = stock.getSymbol();
             this.stockSymbol2transactions.put(symbol, new TreeSet<>());
             this.stockSymbol2BuyOffers.put(symbol, new TreeSet<>(Command::compareBuy));
@@ -35,20 +37,19 @@ public class StockExchangeDescriptor {
 
     public Collection<Transaction> getStockTransactions(String symbol) {
         TreeSet<Transaction> transactions = stockSymbol2transactions.get(symbol);
-        if(transactions == null) {
+        if (transactions == null) {
             throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
         }
 
         return transactions;
     }
 
-    public void committedTransaction(Transaction transactionToCommit){
+    public void committedTransaction(Transaction transactionToCommit) {
         String symbol = transactionToCommit.getSymbol();
         TreeSet<Transaction> stockTransactions = stockSymbol2transactions.get(symbol);
-        if(stockTransactions != null) {
-           stockTransactions.add(transactionToCommit);
-        }
-        else{
+        if (stockTransactions != null) {
+            stockTransactions.add(transactionToCommit);
+        } else {
             throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
         }
     }

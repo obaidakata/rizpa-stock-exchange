@@ -42,7 +42,7 @@ public class RizpaEngine {
             transactions = descriptor.getStockTransactions(symbol);
         }
 
-        if(transactions == null){
+        if (transactions == null) {
             transactions = new ArrayList<>();
         }
 
@@ -143,10 +143,9 @@ public class RizpaEngine {
     public Collection<DealData> getBuyOffers(String stockSymbol) {
         Collection<Command> buyOffers = descriptor.getBuyOffers(stockSymbol);
         Collection<DealData> buyOffersDeals;
-        if(buyOffers == null){
+        if (buyOffers == null) {
             buyOffersDeals = new ArrayList<>();
-        }
-        else{
+        } else {
             buyOffersDeals = buyOffers
                     .stream()
                     .map(Command::getDealData)
@@ -158,10 +157,9 @@ public class RizpaEngine {
     public List<DealData> getSellOffers(String stockSymbol) {
         Collection<Command> sellOffers = descriptor.getSellOffers(stockSymbol);
         List<DealData> sellOffersDeals;
-        if(sellOffers == null){
+        if (sellOffers == null) {
             sellOffersDeals = new ArrayList<>();
-        }
-        else{
+        } else {
             sellOffersDeals = sellOffers
                     .stream()
                     .map(Command::getDealData)

@@ -3,7 +3,6 @@ package app;
 import engine.DealData;
 import engine.descriptor.Stock;
 import rizpa.RizpaFacade;
-import rizpa.generated.*;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,7 +24,6 @@ public class RizpaConsoleApplication {
     private RizpaFacade rizpaFacade;
 
 
-
     public RizpaConsoleApplication() {
         menu = new HashMap<>();
         scanner = new Scanner(System.in);
@@ -37,19 +35,18 @@ public class RizpaConsoleApplication {
         do {
             printMenu(menu);
             MenuItem menuItem = getUserChoiceForMenu(menu);
-            if(menuItem != null) {
+            if (menuItem != null) {
                 System.out.println();
                 menuItem.getAction().run();
                 System.out.println();
-            }
-            else if(!isFileValid){
+            } else if (!isFileValid) {
                 System.out.println("Operation not available, please load system data first.");
             }
-        }while(!isExit);
+        } while (!isExit);
         System.out.println("Bye Bye!");
     }
 
-    HashMap<String , MenuItem> readFileMenu = new HashMap<>();
+    HashMap<String, MenuItem> readFileMenu = new HashMap<>();
 
     private void initMenu() {
         menu.put("1", new MenuItem("Load system data", this::loadSystemData, true));
@@ -69,9 +66,9 @@ public class RizpaConsoleApplication {
         System.out.println("Please type file path where you want to save the file");
         String filePath = scanner.nextLine();
         try {
-            String path  = rizpaFacade.saveAllData(filePath);
+            String path = rizpaFacade.saveAllData(filePath);
             System.out.println("Data saved successfully path: " + path);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -82,7 +79,7 @@ public class RizpaConsoleApplication {
 
     //menu items
 
-    private void loadPreviousData(){
+    private void loadPreviousData() {
         System.out.println("Please type file path");
         String filePath = scanner.nextLine();
         try {
@@ -95,7 +92,7 @@ public class RizpaConsoleApplication {
         }
     }
 
-    private void loadXML(){
+    private void loadXML() {
         System.out.println("Please type file path");
         String filePath = scanner.nextLine();
         try {
@@ -108,16 +105,16 @@ public class RizpaConsoleApplication {
         }
     }
 
-    private void loadSystemData(){
+    private void loadSystemData() {
         do {
             printMenu(readFileMenu);
             MenuItem menuItem = getUserChoiceForMenu(readFileMenu);
-            if(menuItem != null) {
+            if (menuItem != null) {
                 System.out.println();
                 menuItem.getAction().run();
                 System.out.println();
             }
-        }while(!(isReturn || isFileValid));
+        } while (!(isReturn || isFileValid));
     }
 
     private void showAllStocks() {
@@ -127,7 +124,7 @@ public class RizpaConsoleApplication {
         String stockFormat = "| %" + -symbolLength + "s |" +
                 " %" + -companyNameLength + "s | %-10d | %-22d | %-25d |%n";
         String stockTitleFormat = stockFormat.replace("d", "s");
-        int linLength = companyNameLength + symbolLength  + 72;
+        int linLength = companyNameLength + symbolLength + 72;
         String s = String.join("", Collections.nCopies(linLength, "-"));
         System.out.println(s);
         System.out.printf(stockTitleFormat,
@@ -147,12 +144,11 @@ public class RizpaConsoleApplication {
     private void printOneStockDetailsBasedOnUserChoice() {
         System.out.println("Please enter the symbol of the stock");
         Stock stock = rizpaFacade.getStockBySymbol(scanner.nextLine());
-        if(stock != null){
+        if (stock != null) {
             String titleFormat = "Symbol: %s, Company name: %s, Price: %d, Number of transactions: %d, Sum of all transactions: %d %n";
             printStock(titleFormat, stock);
             printDeals(rizpaFacade.getTransactions(stock.getSymbol()));
-        }
-        else {
+        } else {
             System.out.println("Can't find stock symbol, please enter a valid one.");
         }
     }
@@ -160,25 +156,25 @@ public class RizpaConsoleApplication {
     private void doTransaction() {
         System.out.println("Please enter stock symbol");
         String symbol = getInputOfThePossibleOptions("symbol not found", rizpaFacade.getAllSymbols());
-        if(symbol == null) {
+        if (symbol == null) {
             return;
         }
         List<String> directions = rizpaFacade.getDirections();
         System.out.println("Please enter \"buy\" for buy or \"sell\" for sell");
         String direction = getInputOfThePossibleOptions("direction should be \"buy\" or \"sell\" only ", directions);
-        if(direction == null){
+        if (direction == null) {
             return;
         }
 
         System.out.println("Please type the amount of stocks you want to " + direction);
         Integer amount = getIntegerFromUser("amount should be positive integer", this::isInputPositiveInteger);
-        if(amount == null){
+        if (amount == null) {
             return;
         }
 
         System.out.println("Please type " + direction + " limit");
         Integer limit = getIntegerFromUser("limit should be positive integer", this::isInputPositiveInteger);
-        if(limit == null){
+        if (limit == null) {
             return;
         }
 
@@ -203,12 +199,12 @@ public class RizpaConsoleApplication {
         }
     }
 
-    private void printDataInBox(String dataName, int data){
-        int dataNameLength =  dataName.length();
+    private void printDataInBox(String dataName, int data) {
+        int dataNameLength = dataName.length();
         int width = dataNameLength + 17;
         String s = String.join("", Collections.nCopies(width, "-"));
         System.out.println(s);
-        System.out.printf("| %"  +  -dataNameLength + "s : %10d |%n", dataName, data);
+        System.out.printf("| %" + -dataNameLength + "s : %10d |%n", dataName, data);
         System.out.println(s);
     }
 
@@ -219,7 +215,7 @@ public class RizpaConsoleApplication {
     //Other methods
 
     private void printMenu(HashMap<String, MenuItem> providedMenu) {
-        for (String menuItem : providedMenu.keySet()){
+        for (String menuItem : providedMenu.keySet()) {
             System.out.printf("%s) %s\n", menuItem, providedMenu.get(menuItem).getActionName());
         }
     }
@@ -227,10 +223,9 @@ public class RizpaConsoleApplication {
     private MenuItem getUserChoiceForMenu(HashMap<String, MenuItem> providedMenu) {
         String userChoice = scanner.nextLine();
         MenuItem menuItem = providedMenu.get(userChoice);
-        if(menuItem != null) {
+        if (menuItem != null) {
             menuItem = menuItem.isAvailable() ? menuItem : null;
-        }
-        else {
+        } else {
             System.out.println("Type one of " + providedMenu.keySet());
         }
 
@@ -238,13 +233,13 @@ public class RizpaConsoleApplication {
     }
 
     private void enableAllOperations() {
-        for(MenuItem menuItem : menu.values()) {
+        for (MenuItem menuItem : menu.values()) {
             menuItem.setAvailable(true);
         }
     }
 
     private void printStock(String format, Stock stockToPrint) {
-        if(stockToPrint != null) {
+        if (stockToPrint != null) {
             System.out.printf(format,
                     stockToPrint.getSymbol(),
                     stockToPrint.getCompanyName(),
@@ -259,18 +254,18 @@ public class RizpaConsoleApplication {
         Integer amountAsInt = null;
         try {
             amountAsInt = Integer.parseInt(amountToCheck);
-        } catch (NumberFormatException ignored) { }
-        return amountAsInt != null && amountAsInt > 0 ;
+        } catch (NumberFormatException ignored) {
+        }
+        return amountAsInt != null && amountAsInt > 0;
     }
 
     private Integer getIntegerFromUser(String errorMassage, Function<String, Boolean> checkStrategy) {
         Integer value = null;
         String inputAsString = scanner.nextLine();
 
-        if(checkStrategy.apply(inputAsString)) {
+        if (checkStrategy.apply(inputAsString)) {
             value = Integer.parseInt(inputAsString);
-        }
-        else{
+        } else {
             System.out.println("please try again, " + errorMassage);
         }
 
@@ -281,12 +276,12 @@ public class RizpaConsoleApplication {
         String input = null;
         String userInput = scanner.nextLine();
         for (String option : options) {
-            if(option.equalsIgnoreCase(userInput)){
+            if (option.equalsIgnoreCase(userInput)) {
                 input = option;
                 break;
             }
         }
-        if(input == null) {
+        if (input == null) {
             System.out.println("please try again, " + errorMassage);
         }
 
@@ -302,14 +297,14 @@ public class RizpaConsoleApplication {
             printDealData(deal);
         }
 
-        if(deals.size() == 0) {
+        if (deals.size() == 0) {
             System.out.println("|\t\t\t\tNo data found");
         }
 
         System.out.println(s);
     }
 
-    private void printDealData(DealData deal){
+    private void printDealData(DealData deal) {
         System.out.printf(DEAL_DATA_FORMAT,
                 simpleDateFormat.format(deal.getTimeStamp()),
                 deal.getAmount(),
