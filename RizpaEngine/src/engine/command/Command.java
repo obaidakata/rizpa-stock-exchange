@@ -2,21 +2,12 @@ package engine.command;
 
 import engine.DealData;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public  class Command implements Comparable<Command>{
+public class Command implements Comparable<Command> {
     private DealData dealData;
     private CommandDirection direction;
     private CommandType type;
-
-    public Command() {
-    }
 
     public Command(String stockSymbol,
                    CommandDirection direction,
@@ -75,20 +66,20 @@ public  class Command implements Comparable<Command>{
 
     public static int compareSell(Command first, Command second) {
         int result = Integer.compare(first.getOfferPrice(), second.getOfferPrice());
-        if(result == 0){
-            result = second.dealData.getTimeStamp().compareTo(first.dealData.getTimeStamp());;
+        if (result == 0) {
+            result = second.dealData.getTimeStamp().compareTo(first.dealData.getTimeStamp());
+            ;
         }
 
         return result;
     }
 
-    public boolean canCommitPurchase(Command toCompare){
-        boolean canCommitPurchase  = getStocksAmount() > 0 && toCompare.getStocksAmount() > 0;
-        canCommitPurchase =  canCommitPurchase && getStockSymbol().equals(toCompare.getStockSymbol());
-        if(direction == CommandDirection.Buy && toCompare.getDirection() == CommandDirection.Sell) {
+    public boolean canCommitPurchase(Command toCompare) {
+        boolean canCommitPurchase = getStocksAmount() > 0 && toCompare.getStocksAmount() > 0;
+        canCommitPurchase = canCommitPurchase && getStockSymbol().equals(toCompare.getStockSymbol());
+        if (direction == CommandDirection.Buy && toCompare.getDirection() == CommandDirection.Sell) {
             canCommitPurchase = canCommitPurchase && getOfferPrice() >= toCompare.getOfferPrice();
-        }
-        else {
+        } else {
             canCommitPurchase = canCommitPurchase && getOfferPrice() <= toCompare.getOfferPrice();
         }
         return canCommitPurchase;

@@ -3,28 +3,20 @@ package engine.descriptor;
 import engine.command.Command;
 import engine.Transaction;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class StockExchangeDescriptor {
     private Stocks stocks;
-    private Commands stockSymbol2BuyOffers;
-    private Commands stockSymbol2SellOffers;
-    private Transactions stockSymbol2transactions;
+    private HashMap<String, TreeSet<Command>>  stockSymbol2BuyOffers;
+    private HashMap<String, TreeSet<Command>> stockSymbol2SellOffers;
+    private HashMap<String, TreeSet<Transaction>> stockSymbol2transactions;
     private final String SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE = "Symbol not found";
-
-    private StockExchangeDescriptor() {
-    }
 
     public StockExchangeDescriptor(Stocks stocks) {
         this.stocks = stocks;
-        this.stockSymbol2BuyOffers = new Commands();
-        this.stockSymbol2SellOffers = new Commands();
-        this.stockSymbol2transactions = new Transactions();
+        this.stockSymbol2BuyOffers = new HashMap<>();
+        this.stockSymbol2SellOffers = new HashMap<>();
+        this.stockSymbol2transactions = new HashMap<>();
         for(Stock stock : stocks.getStocks()) {
             String symbol = stock.getSymbol();
             this.stockSymbol2transactions.put(symbol, new TreeSet<>());
@@ -62,11 +54,11 @@ public class StockExchangeDescriptor {
     }
 
     public Collection<Command> getSellOffers(String symbol) {
-        return stockSymbol2SellOffers.getSellOffers(symbol);
+        return stockSymbol2SellOffers.get(symbol);
     }
 
     public Collection<Command> getBuyOffers(String symbol) {
-        return stockSymbol2BuyOffers.getBuyOffers(symbol);
+        return stockSymbol2BuyOffers.get(symbol);
     }
 
     @Override
@@ -89,9 +81,5 @@ public class StockExchangeDescriptor {
     @Override
     public int hashCode() {
         return stocks != null ? stocks.hashCode() : 0;
-    }
-
-    public Commands get() {
-        return stockSymbol2BuyOffers;
     }
 }

@@ -1,17 +1,9 @@
 package engine;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Transaction implements Comparable<Transaction>{
-    private DealData dealData;
-
-    private Transaction() {
-    }
+    private final DealData dealData;
 
     public Transaction(String symbol,
                        int price,

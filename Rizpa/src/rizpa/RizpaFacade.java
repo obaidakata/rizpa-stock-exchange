@@ -1,25 +1,15 @@
 package rizpa;
 
-import app.RizpaConsoleApplication;
-import engine.*;
-import engine.command.Command;
+import engine.DealData;
+import engine.RizpaEngine;
+import engine.Transaction;
 import engine.command.CommandDirection;
-import engine.command.CommandTressSet;
-import engine.command.CommandType;
-import engine.descriptor.Commands;
 import engine.descriptor.Stock;
 import engine.descriptor.StockExchangeDescriptor;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import java.io.File;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +22,7 @@ public class RizpaFacade {
     public RizpaFacade() {
         this.converter = new RizpaDataConverter();
         this.rizpaEngine = new RizpaEngine();
-        this.parser =new RizpaXmlParser();
+        this.parser = new RizpaXmlParser();
     }
 
     public Collection<DealData> getTransactions(String symbol) {
@@ -54,11 +44,10 @@ public class RizpaFacade {
     }
 
     private void checkData(StockExchangeDescriptor descriptor) throws Exception {
-        if(!rizpaEngine.isAllStocksSymbolUnique(descriptor)){
+        if (!rizpaEngine.isAllStocksSymbolUnique(descriptor)) {
             String SYMBOLS_ARE_NOT_UNIQUE = "Symbols are not unique";
             throw new Exception(SYMBOLS_ARE_NOT_UNIQUE);
-        }
-        else if(!rizpaEngine.isAllCompaniesNamesUnique(descriptor)) {
+        } else if (!rizpaEngine.isAllCompaniesNamesUnique(descriptor)) {
             String COMPANIES_NAMES_ARE_NOT_UNIQUE = "Companies names are not unique";
             throw new Exception(COMPANIES_NAMES_ARE_NOT_UNIQUE);
         }
@@ -69,7 +58,7 @@ public class RizpaFacade {
         rizpaEngine.doLimitCommand(commandDirection, symbol, amount, limit);
     }
 
-    public Collection<String> getAllSymbols(){
+    public Collection<String> getAllSymbols() {
         return rizpaEngine.getAllSymbols();
 
     }
@@ -90,7 +79,7 @@ public class RizpaFacade {
 
     public int getTransactionsCount(String symbol) {
         Collection<Transaction> transactions = rizpaEngine.getStockTransactions(symbol);
-        return transactions != null? transactions.size() : 0;
+        return transactions != null ? transactions.size() : 0;
     }
 
     public Stock getStockBySymbol(String symbol) {
