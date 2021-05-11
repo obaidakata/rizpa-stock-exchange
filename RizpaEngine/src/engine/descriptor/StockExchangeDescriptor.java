@@ -8,13 +8,15 @@ import java.util.HashMap;
 import java.util.TreeSet;
 
 public class StockExchangeDescriptor {
+    private Users users;
     private Stocks stocks;
     private HashMap<String, TreeSet<Command>> stockSymbol2BuyOffers;
     private HashMap<String, TreeSet<Command>> stockSymbol2SellOffers;
     private HashMap<String, TreeSet<Transaction>> stockSymbol2transactions;
     private final String SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE = "Symbol not found";
 
-    public StockExchangeDescriptor(Stocks stocks) {
+    public StockExchangeDescriptor(Stocks stocks, Users users) {
+        this.users = users;
         this.stocks = stocks;
         this.stockSymbol2BuyOffers = new HashMap<>();
         this.stockSymbol2SellOffers = new HashMap<>();

@@ -1,11 +1,7 @@
 package rizpa;
 
-import engine.descriptor.Stock;
-import engine.descriptor.StockExchangeDescriptor;
-import engine.descriptor.Stocks;
-import rizpa.generated.RizpaStockExchangeDescriptor;
-import rizpa.generated.RseStock;
-import rizpa.generated.RseStocks;
+import engine.descriptor.*;
+import rizpa.generated.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +10,7 @@ public class RizpaDataConverter {
 
     public StockExchangeDescriptor convert(RizpaStockExchangeDescriptor descriptor) {
         List<Stock> stockList = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         if (descriptor != null) {
             RseStocks rseStocks = descriptor.getRseStocks();
             if (rseStocks != null) {
@@ -27,10 +24,33 @@ public class RizpaDataConverter {
                     }
                 }
             }
+
+            RseUsers rseUsers = descriptor.getRseUsers();
+            if(rseUsers != null) {
+                List<RseUser> temporaryUsers =  rseUsers.getRseUser();
+                if(temporaryUsers != null) {
+                    for(RseUser rseUser : temporaryUsers) {
+                        RseHoldings rseHoldings = rseUser.getRseHoldings();
+                        Holdings holdings = new Holdings();
+                        if(rseHoldings != null) {
+                            for (RseItem rseItem : rseHoldings.getRseItem()) {
+                                holdings.add(new Item(
+                                        rseItem.getSymbol(),
+                                        rseItem.getQuantity()));
+                            }
+                        }
+
+                        users.add(new User(rseUser.getName(), holdings));
+                    }
+                }
+            }
         }
 
         Stocks stocks = new Stocks(stockList);
+        Users users1 = new Users(users);
 
-        return new StockExchangeDescriptor(stocks);
+
+
+        return new StockExchangeDescriptor(stocks, users1);
     }
 }
