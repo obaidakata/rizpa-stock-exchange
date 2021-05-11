@@ -1,42 +1,33 @@
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import rizpa.RizpaFacade;
+
+import java.net.URL;
 
 public class RizpaFX extends Application {
-    private int clickCounter;
-    private Button btn;
-
     @Override
-    public void start(Stage primaryStage) {
-        System.out.println("called on " + Thread.currentThread().getName());
-        btn = new Button();
-        btn.setText("Say 'Hello World'");
-        EventHandler<ActionEvent> actionEventEventHandler = event -> this.updateClickCounter();
-        btn.setOnAction(actionEventEventHandler);
+    public void start(Stage primaryStage) throws Exception {
+        RizpaFacade rizpaModel = new RizpaFacade();
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        primaryStage.setTitle("Rizpa Stock Exchange");
 
-        Scene scene = new Scene(root, 300, 250);
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource("RizpaFxApp.fxml");
+        fxmlLoader.setLocation(url);
+        Parent root = fxmlLoader.load(url.openStream());
 
-        primaryStage.setTitle("Hello World!");
+        RizpaController rizpaController = fxmlLoader.getController();
+        rizpaController.setModel(rizpaModel);
+
+        Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
-        System.out.println("java fx is done");
-    }
-
-    private void updateClickCounter(){
-        ++clickCounter;
-        btn.setText("Clicked " + clickCounter + " Times");
     }
 
     public static void main(String[] args) {
-        new Thread(() -> System.out.println("blabla")).start();
-        launch(args);
-        System.out.println("main ended");
+        launch(RizpaFX.class);
     }
 }
