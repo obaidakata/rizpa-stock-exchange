@@ -85,4 +85,8 @@ public class StockExchangeDescriptor {
     public int hashCode() {
         return stocks != null ? stocks.hashCode() : 0;
     }
+
+    public Users getUsers() {
+        return users;
+    }
 }

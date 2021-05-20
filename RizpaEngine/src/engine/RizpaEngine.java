@@ -6,6 +6,7 @@ import engine.command.CommandType;
 import engine.descriptor.Stock;
 import engine.descriptor.StockExchangeDescriptor;
 import engine.descriptor.Stocks;
+import engine.descriptor.Users;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -210,5 +211,9 @@ public class RizpaEngine {
 
     public void setDescriptor(StockExchangeDescriptor descriptor) {
         this.descriptor = descriptor;
+    }
+
+    public Users getAllUsers() {
+        return descriptor.getUsers();
     }
 }

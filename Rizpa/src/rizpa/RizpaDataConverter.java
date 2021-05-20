@@ -9,15 +9,22 @@ import java.util.List;
 public class RizpaDataConverter {
 
     public StockExchangeDescriptor convert(RizpaStockExchangeDescriptor descriptor) {
-        List<Stock> stockList = new ArrayList<>();
-        List<User> users = new ArrayList<>();
+        List<Stock> stockList = getStocks(descriptor);
+        Users users = getUsers(descriptor);
+
+        Stocks stocks = new Stocks(stockList);
+        return new StockExchangeDescriptor(stocks, users);
+    }
+
+    private List<Stock> getStocks(RizpaStockExchangeDescriptor descriptor) {
+        List<Stock> stocksList = new ArrayList<>();
         if (descriptor != null) {
             RseStocks rseStocks = descriptor.getRseStocks();
             if (rseStocks != null) {
                 List<RseStock> rseStocksList = rseStocks.getRseStock();
                 if (rseStocksList != null) {
                     for (RseStock stock : rseStocksList) {
-                        stockList.add(new Stock(
+                        stocksList.add(new Stock(
                                 stock.getRseSymbol(),
                                 stock.getRseCompanyName(),
                                 stock.getRsePrice()));
@@ -25,9 +32,18 @@ public class RizpaDataConverter {
                 }
             }
 
+
+        }
+
+        return stocksList;
+    }
+
+    private Users getUsers(RizpaStockExchangeDescriptor descriptor) {
+        Users users = new Users();
+        if (descriptor != null) {
             RseUsers rseUsers = descriptor.getRseUsers();
             if(rseUsers != null) {
-                List<RseUser> temporaryUsers =  rseUsers.getRseUser();
+                List<RseUser> temporaryUsers = rseUsers.getRseUser();
                 if(temporaryUsers != null) {
                     for(RseUser rseUser : temporaryUsers) {
                         RseHoldings rseHoldings = rseUser.getRseHoldings();
@@ -46,11 +62,6 @@ public class RizpaDataConverter {
             }
         }
 
-        Stocks stocks = new Stocks(stockList);
-        Users users1 = new Users(users);
-
-
-
-        return new StockExchangeDescriptor(stocks, users1);
+        return users;
     }
 }

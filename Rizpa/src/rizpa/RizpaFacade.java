@@ -6,6 +6,7 @@ import engine.Transaction;
 import engine.command.CommandDirection;
 import engine.descriptor.Stock;
 import engine.descriptor.StockExchangeDescriptor;
+import engine.descriptor.Users;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
 import java.util.Collection;
@@ -105,5 +106,9 @@ public class RizpaFacade {
 
     public void loadPreviousData(String fileName) throws Exception {
         rizpaEngine.setDescriptor(parser.loadPreviousData(fileName));
+    }
+
+    public Users getUsers(){
+        return rizpaEngine.getAllUsers();
     }
 }

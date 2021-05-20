@@ -1,19 +1,6 @@
 package engine.descriptor;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class Users {
-    private List<User> users;
-
-    public Users(List<User> users) {
-        this.users = users;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+public class Users extends ArrayList<User> {
 }
