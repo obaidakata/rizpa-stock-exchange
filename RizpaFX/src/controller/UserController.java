@@ -1,3 +1,5 @@
+package controller;
+
 import engine.descriptor.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

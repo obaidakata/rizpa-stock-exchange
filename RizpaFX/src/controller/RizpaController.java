@@ -1,3 +1,5 @@
+package controller;
+
 import engine.descriptor.User;
 import engine.descriptor.Users;
 import javafx.event.ActionEvent;
@@ -23,7 +25,7 @@ public class RizpaController {
 
     private RizpaFacade rizpaModel;
 
-//    private HashMap<String, UserController> userName2UserController = new HashMap<>();
+//    private HashMap<String, controller.UserController> userName2UserController = new HashMap<>();
 
     public void setModel(RizpaFacade rizpaModel) {
         this.rizpaModel = rizpaModel;
@@ -40,7 +42,7 @@ public class RizpaController {
     }
 
     @FXML
-    protected void loadFile(ActionEvent event){
+    public void loadFile(ActionEvent event){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select words file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml file", "*.xml"));
@@ -67,7 +69,7 @@ public class RizpaController {
                 usersPanel.getTabs().remove(1);
             }
 
-            URL url = getClass().getResource("UserFX.fxml");
+            URL url = getClass().getResource("fxml/UserFX.fxml");
             try {
                 for (User user : users) {
                     FXMLLoader fxmlLoader = new FXMLLoader();
@@ -75,7 +77,7 @@ public class RizpaController {
                     Tab newUserTab = new Tab(user.getName());
                     newUserTab.setContent(fxmlLoader.load(url.openStream()));
                     usersPanel.getTabs().add(newUserTab);
-//                    UserController userController = fxmlLoader.getController();
+//                    controller.UserController userController = fxmlLoader.getController();
 //                    userController.setUser(user);
 //                    userName2UserController.put(user.getName(), userController);
                 }
