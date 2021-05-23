@@ -51,6 +51,10 @@ public class RizpaFacade {
         } else if (!rizpaEngine.isAllCompaniesNamesUnique(descriptor)) {
             String COMPANIES_NAMES_ARE_NOT_UNIQUE = "Companies names are not unique";
             throw new Exception(COMPANIES_NAMES_ARE_NOT_UNIQUE);
+        } else if(!rizpaEngine.isAllUsersNamesUnique(descriptor)) {
+            throw new Exception("Users names are not unique");
+        } else if(!rizpaEngine.isAllUserStockExists(descriptor)){
+            throw new Exception("User hold stock that doesn't exists");
         }
     }
 

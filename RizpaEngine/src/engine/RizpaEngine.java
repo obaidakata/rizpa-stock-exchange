@@ -3,10 +3,7 @@ package engine;
 import engine.command.Command;
 import engine.command.CommandDirection;
 import engine.command.CommandType;
-import engine.descriptor.Stock;
-import engine.descriptor.StockExchangeDescriptor;
-import engine.descriptor.Stocks;
-import engine.descriptor.Users;
+import engine.descriptor.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -215,5 +212,31 @@ public class RizpaEngine {
 
     public Users getAllUsers() {
         return descriptor.getUsers();
+    }
+
+    public boolean isAllUsersNamesUnique(StockExchangeDescriptor descriptor) {
+        boolean isNamesUnique = true;
+        try {
+            List<String> usersNames = descriptor
+                    .getUsers()
+                    .stream()
+                    .map(User::getName)
+                    .collect(Collectors.toList());
+
+            isNamesUnique = areStringsUnique(usersNames);
+        } catch (NullPointerException ignored) {
+        }
+
+        return isNamesUnique;
+    }
+
+    public boolean isAllUserStockExists(StockExchangeDescriptor descriptor) {
+        boolean isStocksExists = true;
+//        Users users = descriptor.getUsers();
+//        for (User user: users){
+//
+//            Holdings userHoldings = user.getHoldings();
+//        }
+        return isStocksExists;
     }
 }

@@ -21,8 +21,9 @@ public class RizpaController {
     @FXML private Button loadFileButton;
     @FXML private TabPane usersPanel;
 
-
     private RizpaFacade rizpaModel;
+
+//    private HashMap<String, UserController> userName2UserController = new HashMap<>();
 
     public void setModel(RizpaFacade rizpaModel) {
         this.rizpaModel = rizpaModel;
@@ -36,15 +37,13 @@ public class RizpaController {
     public void initialize() {
         System.out.println("Inside runnable init 2");
         System.out.println();
-
     }
 
     @FXML
     protected void loadFile(ActionEvent event){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select words file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml file" +
-                "", "*.xml"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml file", "*.xml"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null) {
             return;
@@ -68,16 +67,17 @@ public class RizpaController {
                 usersPanel.getTabs().remove(1);
             }
 
-
+            URL url = getClass().getResource("UserFX.fxml");
             try {
-//                GridPane gridPane = ;
                 for (User user : users) {
                     FXMLLoader fxmlLoader = new FXMLLoader();
-                    URL url = getClass().getResource("UserFX.fxml");
                     fxmlLoader.setLocation(url);
                     Tab newUserTab = new Tab(user.getName());
                     newUserTab.setContent(fxmlLoader.load(url.openStream()));
                     usersPanel.getTabs().add(newUserTab);
+//                    UserController userController = fxmlLoader.getController();
+//                    userController.setUser(user);
+//                    userName2UserController.put(user.getName(), userController);
                 }
             } catch (Exception e) {
                 System.out.println("Resource not valid ");
