@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import rizpa.RizpaFacade;
 
 
@@ -17,24 +18,23 @@ public class AdminController {
 
     private RizpaFacade rizpaFacade;
     @FXML private ListView<String> stocksList;
-    @FXML private TableView<Command> sellCommandTable;
-    @FXML private TableColumn<Command, String> timeStampColumn;
-    @FXML private TableColumn<Command, String> typeColumn;
-    @FXML private TableColumn<Command, String> amountColumn;
-    @FXML private TableColumn<Command, String> priceColumn;
-    @FXML private TableColumn<Command, String> usernameColumn;
 
     private ObservableList<Command> sellCommands = FXCollections.observableArrayList();
+    @FXML private BorderPane sellCommandsTable;
+    @FXML private CommandsTableController sellCommandsTableController;
+
+    private ObservableList<Command> buyCommands = FXCollections.observableArrayList();
+    @FXML private BorderPane buyCommandsTable;
+    @FXML private CommandsTableController buyCommandsTableController;
 
     @FXML
     public void initialize() {
         this.rizpaFacade = AppManager.getInstance().getRizpaFacade();
-        sellCommandTable.setItems(sellCommands);
-        timeStampColumn.setCellValueFactory(command -> new SimpleStringProperty(command.getValue().getDealData().getTimeStampValue()));
-        typeColumn.setCellValueFactory(command -> new SimpleStringProperty(command.getValue().getType().toString()));
-        amountColumn.setCellValueFactory(command -> new SimpleStringProperty(String.valueOf(command.getValue().getDealData().getAmount())));
-        priceColumn.setCellValueFactory(command -> new SimpleStringProperty(String.valueOf(command.getValue().getDealData().getPrice())));
-        usernameColumn.setCellValueFactory(command -> new SimpleStringProperty(String.valueOf(command.getValue().getUsername())));
+        sellCommandsTableController.setTitle("Sell Commands");
+        sellCommandsTableController.setCommandsList(sellCommands);
+
+        buyCommandsTableController.setTitle("Buy Commands");
+        buyCommandsTableController.setCommandsList(buyCommands);
     }
 
     public void showStocks() {
@@ -45,5 +45,7 @@ public class AdminController {
         String symbol = stocksList.getSelectionModel().getSelectedItem();
         sellCommands.clear();
         sellCommands.addAll(rizpaFacade.getSellCommands(symbol));
+        buyCommands.clear();
+        buyCommands.addAll(rizpaFacade.getBuyCommands(symbol));
     }
 }
