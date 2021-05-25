@@ -128,4 +128,8 @@ public class RizpaFacade {
     {
         return rizpaEngine.getBuyCommands(symbol);
     }
+
+    public Collection<Transaction> getTransactionsList(String symbol) {
+        return rizpaEngine.getStockTransactions(symbol);
+    }
 }

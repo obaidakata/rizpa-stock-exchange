@@ -5,11 +5,27 @@ import java.util.Date;
 public class Transaction implements Comparable<Transaction> {
     private final DealData dealData;
 
+    private final String buyerName;
+    private final String sellerName;
+
     public Transaction(String symbol,
                        int price,
                        int amount,
                        Date timeStamp) {
         dealData = new DealData(symbol, price, amount, timeStamp);
+        this.buyerName = "Admin";
+        this.sellerName = "Admin";
+    }
+
+    public Transaction(String symbol,
+                       int price,
+                       int amount,
+                       Date timeStamp,
+                       String buyerName,
+                       String sellerName) {
+        dealData = new DealData(symbol, price, amount, timeStamp);
+        this.sellerName = sellerName;
+        this.buyerName = buyerName;
     }
 
     public DealData getDealData() {
@@ -43,5 +59,13 @@ public class Transaction implements Comparable<Transaction> {
 
     public String getSymbol() {
         return dealData.getSymbol();
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public String getSellerName() {
+        return sellerName;
     }
 }

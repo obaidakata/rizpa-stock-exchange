@@ -1,6 +1,7 @@
 package controller;
 
 import appManeger.AppManager;
+import engine.Transaction;
 import engine.command.Command;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -27,6 +28,10 @@ public class AdminController {
     @FXML private BorderPane buyCommandsTable;
     @FXML private CommandsTableController buyCommandsTableController;
 
+    private ObservableList<Transaction> transactions = FXCollections.observableArrayList();
+    @FXML private BorderPane transactionsTable;
+    @FXML private TransactionsTableController transactionsTableController;
+
     @FXML
     public void initialize() {
         this.rizpaFacade = AppManager.getInstance().getRizpaFacade();
@@ -35,6 +40,8 @@ public class AdminController {
 
         buyCommandsTableController.setTitle("Buy Commands");
         buyCommandsTableController.setCommandsList(buyCommands);
+
+        transactionsTableController.setTransactionsList(transactions);
     }
 
     public void showStocks() {
@@ -45,7 +52,11 @@ public class AdminController {
         String symbol = stocksList.getSelectionModel().getSelectedItem();
         sellCommands.clear();
         sellCommands.addAll(rizpaFacade.getSellCommands(symbol));
+
         buyCommands.clear();
         buyCommands.addAll(rizpaFacade.getBuyCommands(symbol));
+
+        transactions.clear();
+        transactions.addAll(rizpaFacade.getTransactionsList(symbol));
     }
 }
