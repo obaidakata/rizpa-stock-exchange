@@ -1,5 +1,6 @@
 package controller;
 
+import appManeger.AppManager;
 import engine.descriptor.User;
 import engine.descriptor.Users;
 import javafx.event.ActionEvent;
@@ -28,17 +29,10 @@ public class RizpaController {
     @FXML private GridPane adminPage;
     @FXML private AdminController adminPageController;
 
-    private RizpaFacade rizpaModel;
+    private RizpaFacade rizpaFacade;
 
     private HashMap<String, controller.UserController> userName2UserController = new HashMap<>();
 
-    public void setModel(RizpaFacade rizpaModel) {
-        this.rizpaModel = rizpaModel;
-        if(adminPageController != null)
-        {
-            adminPageController.setModel(rizpaModel);
-        }
-    }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -46,6 +40,7 @@ public class RizpaController {
 
     @FXML
     public void initialize() {
+        this.rizpaFacade = AppManager.getInstance().getRizpaFacade();
     }
 
     @FXML
@@ -60,10 +55,10 @@ public class RizpaController {
 
         String absolutePath = selectedFile.getAbsolutePath();
         try {
-            rizpaModel.loadNewData(absolutePath);
-            rizpaModel.doLimitCommand("admin", "sell", "Googl", 50, 90);
-            rizpaModel.doLimitCommand("admin","sell", "Googl", 30, 90);
-            rizpaModel.doLimitCommand("admin","sell", "Googl", 10, 90);
+            rizpaFacade.loadNewData(absolutePath);
+            rizpaFacade.doLimitCommand("admin", "sell", "Googl", 50, 90);
+            rizpaFacade.doLimitCommand("admin","sell", "Googl", 30, 90);
+            rizpaFacade.doLimitCommand("admin","sell", "Googl", 10, 90);
             fileStatus.setText("File loaded successfully");
             showUsers();
             showStocks();
@@ -80,7 +75,7 @@ public class RizpaController {
     }
 
     private void showUsers() {
-        Users users = rizpaModel.getUsers();
+        Users users = rizpaFacade.getUsers();
         if(users != null)
         {
             if(usersPanel.getTabs().size() > 1) {

@@ -1,9 +1,7 @@
 package controller;
 
-import engine.DealData;
-import engine.TimeStamp;
+import appManeger.AppManager;
 import engine.command.Command;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,14 +9,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import rizpa.RizpaFacade;
 
 
 public class AdminController {
 
-    private RizpaFacade rizpaModel;
+    private RizpaFacade rizpaFacade;
     @FXML private ListView<String> stocksList;
     @FXML private TableView<Command> sellCommandTable;
     @FXML private TableColumn<Command, String> timeStampColumn;
@@ -31,6 +28,7 @@ public class AdminController {
 
     @FXML
     public void initialize() {
+        this.rizpaFacade = AppManager.getInstance().getRizpaFacade();
         sellCommandTable.setItems(sellCommands);
         timeStampColumn.setCellValueFactory(command -> new SimpleStringProperty(command.getValue().getDealData().getTimeStampValue()));
         typeColumn.setCellValueFactory(command -> new SimpleStringProperty(command.getValue().getType().toString()));
@@ -39,17 +37,13 @@ public class AdminController {
         usernameColumn.setCellValueFactory(command -> new SimpleStringProperty(String.valueOf(command.getValue().getUsername())));
     }
 
-    public void setModel(RizpaFacade rizpaModel) {
-        this.rizpaModel = rizpaModel;
-    }
-
     public void showStocks() {
-        stocksList.getItems().addAll(rizpaModel.getAllSymbols());
+        stocksList.getItems().addAll(rizpaFacade.getAllSymbols());
     }
 
     public void stockSelected(MouseEvent mouseEvent) {
         String symbol = stocksList.getSelectionModel().getSelectedItem();
         sellCommands.clear();
-        sellCommands.addAll(rizpaModel.getSellCommands(symbol));
+        sellCommands.addAll(rizpaFacade.getSellCommands(symbol));
     }
 }

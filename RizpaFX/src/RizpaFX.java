@@ -11,8 +11,6 @@ import java.net.URL;
 public class RizpaFX extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        RizpaFacade rizpaModel = new RizpaFacade();
-
         primaryStage.setTitle("Rizpa Stock Exchange");
 
         FXMLLoader fxmlLoader = new FXMLLoader();
@@ -21,7 +19,6 @@ public class RizpaFX extends Application {
         Parent root = fxmlLoader.load(url.openStream());
 
         RizpaController rizpaController = fxmlLoader.getController();
-        rizpaController.setModel(rizpaModel);
         rizpaController.setPrimaryStage(primaryStage);
 
         Scene scene = new Scene(root, 1000, 1000);
