@@ -2,13 +2,16 @@ package rizpa;
 
 import engine.DealData;
 import engine.RizpaEngine;
+import engine.RizpaEngine2;
 import engine.Transaction;
+import engine.command.Command;
 import engine.command.CommandDirection;
 import engine.descriptor.Stock;
 import engine.descriptor.StockExchangeDescriptor;
 import engine.descriptor.Users;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +21,11 @@ public class RizpaFacade {
     private final RizpaDataConverter converter;
     private final RizpaXmlParser parser;
 
-    private final RizpaEngine rizpaEngine;
+    private final RizpaEngine2 rizpaEngine;
 
     public RizpaFacade() {
         this.converter = new RizpaDataConverter();
-        this.rizpaEngine = new RizpaEngine();
+        this.rizpaEngine = new RizpaEngine2();
         this.parser = new RizpaXmlParser();
     }
 
@@ -58,9 +61,9 @@ public class RizpaFacade {
         }
     }
 
-    public void doLimitCommand(String direction, String symbol, int amount, int limit) {
+    public void doLimitCommand(String username, String direction, String symbol, int amount, int limit) {
         CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
-        rizpaEngine.doLimitCommand(commandDirection, symbol, amount, limit);
+        rizpaEngine.doLimitCommand(username, commandDirection, symbol, amount, limit);
     }
 
     public Collection<String> getAllSymbols() {
@@ -114,5 +117,15 @@ public class RizpaFacade {
 
     public Users getUsers(){
         return rizpaEngine.getAllUsers();
+    }
+
+    public Collection<Command> getSellCommands(String symbol)
+    {
+        return rizpaEngine.getSellCommands(symbol);
+    }
+
+    public Collection<Command> getBuyCommands(String symbol)
+    {
+        return rizpaEngine.getBuyCommands(symbol);
     }
 }

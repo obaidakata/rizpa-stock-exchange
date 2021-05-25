@@ -8,13 +8,16 @@ public class Command implements Comparable<Command> {
     private DealData dealData;
     private CommandDirection direction;
     private CommandType type;
+    private String username;
 
-    public Command(String stockSymbol,
+    public Command(String username,
+                   String stockSymbol,
                    CommandDirection direction,
                    CommandType type,
                    int stocksAmount,
                    int offerPrice,
                    Date timeStamp) {
+        this.username = username;
         dealData = new DealData(stockSymbol,
                 offerPrice,
                 stocksAmount,
@@ -117,5 +120,9 @@ public class Command implements Comparable<Command> {
     @Override
     public int compareTo(Command o) {
         return 0;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

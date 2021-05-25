@@ -16,7 +16,7 @@ public class RizpaFX extends Application {
         primaryStage.setTitle("Rizpa Stock Exchange");
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("RizpaFxApp.fxml");
+        URL url = getClass().getResource("fxml/RizpaFxApp.fxml");
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
 

@@ -11,19 +11,19 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RizpaController">
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RizpaController">
    <content>
       <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0">
          <center>
             <ScrollPane BorderPane.alignment="CENTER">
                <content>
-                  <TabPane fx:id="usersPanel" prefHeight="587.0" prefWidth="847.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="usersPanel" prefHeight="657.0" prefWidth="998.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Admin">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <fx:include source="AdminFX.fxml" />
+                                    <fx:include fx:id="adminPage" source="AdminFX.fxml" />
                                  </children>
                               </AnchorPane>
                         </content>

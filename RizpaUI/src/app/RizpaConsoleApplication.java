@@ -178,7 +178,7 @@ public class RizpaConsoleApplication {
             return;
         }
 
-        rizpaFacade.doLimitCommand(direction, symbol, amount, limit);
+        rizpaFacade.doLimitCommand("admin", direction, symbol, amount, limit);
     }
 
     private void showALlActions() {

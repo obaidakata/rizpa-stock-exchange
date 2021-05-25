@@ -47,9 +47,13 @@ public class RizpaEngine {
         return transactions;
     }
 
-    public void doLimitCommand(CommandDirection direction, String symbol, int amount, int limit) {
+    public void doLimitCommand(String username,
+                               CommandDirection direction,
+                               String symbol,
+                               int amount,
+                               int limit) {
         String stockSymbol = getSymbol(symbol);
-        Command newCommand = new Command(stockSymbol, direction, CommandType.LMT, amount, limit, new Date());
+        Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit, new Date());
 
         Collection<Command> buyCommands = descriptor.getBuyOffers(stockSymbol);
         Collection<Command> sellCommands = descriptor.getSellOffers(stockSymbol);
@@ -210,33 +214,5 @@ public class RizpaEngine {
         this.descriptor = descriptor;
     }
 
-    public Users getAllUsers() {
-        return descriptor.getUsers();
-    }
 
-    public boolean isAllUsersNamesUnique(StockExchangeDescriptor descriptor) {
-        boolean isNamesUnique = true;
-        try {
-            List<String> usersNames = descriptor
-                    .getUsers()
-                    .stream()
-                    .map(User::getName)
-                    .collect(Collectors.toList());
-
-            isNamesUnique = areStringsUnique(usersNames);
-        } catch (NullPointerException ignored) {
-        }
-
-        return isNamesUnique;
-    }
-
-    public boolean isAllUserStockExists(StockExchangeDescriptor descriptor) {
-        boolean isStocksExists = true;
-//        Users users = descriptor.getUsers();
-//        for (User user: users){
-//
-//            Holdings userHoldings = user.getHoldings();
-//        }
-        return isStocksExists;
-    }
 }

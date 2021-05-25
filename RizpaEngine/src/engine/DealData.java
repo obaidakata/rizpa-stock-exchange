@@ -9,15 +9,14 @@ public class DealData implements Comparable<DealData> {
     private String symbol;
     private int price;
     private int amount;
-    private Date timeStamp;
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
+    private TimeStamp timeStamp;
 
     public DealData(String symbol, int price, int amount, Date timeStamp) {
         this.id = idGenerator++;
         this.symbol = symbol;
         this.price = price;
         this.amount = amount;
-        this.timeStamp = timeStamp;
+        this.timeStamp = new TimeStamp(timeStamp);
     }
 
     public int getDealPrice() {
@@ -37,9 +36,16 @@ public class DealData implements Comparable<DealData> {
     }
 
     public Date getTimeStamp() {
-        return timeStamp;
+        return timeStamp.getValue();
     }
 
+    public String getTimeStampValue() {
+        return timeStamp.toString();
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
     @Override
     public boolean equals(Object o) {
