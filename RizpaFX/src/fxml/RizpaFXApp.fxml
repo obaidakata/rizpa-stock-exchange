@@ -11,27 +11,23 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RizpaController">
+<ScrollPane prefHeight="790.0" prefWidth="1085.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RizpaController">
    <content>
-      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0">
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="789.0" prefWidth="1087.0">
          <center>
-            <ScrollPane BorderPane.alignment="CENTER">
-               <content>
-                  <TabPane fx:id="usersPanel" prefHeight="657.0" prefWidth="998.0" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                      <Tab text="Admin">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <fx:include fx:id="adminPage" source="AdminFX.fxml" />
-                                 </children>
-                              </AnchorPane>
-                        </content>
-                      </Tab>
-                    </tabs>
-                  </TabPane>
-               </content>
-            </ScrollPane>
+            <TabPane fx:id="usersPanel" prefHeight="1200.0" prefWidth="1080.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Admin">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="715.0" prefWidth="1072.0">
+                           <children>
+                              <fx:include fx:id="adminPage" source="AdminFX.fxml" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
          </center>
          <top>
             <GridPane BorderPane.alignment="CENTER">

@@ -50,6 +50,12 @@ public class StockExchangeDescriptor {
         String symbol = transactionToCommit.getSymbol();
         TreeSet<Transaction> stockTransactions = stockSymbol2transactions.get(symbol);
         if (stockTransactions != null) {
+            User buyer = getUserByName(transactionToCommit.getBuyerName());
+            User seller = getUserByName(transactionToCommit.getSellerName());
+            Item item = new Item(symbol, transactionToCommit.getDealData().getAmount());
+            buyer.getHoldings().addItem(item);
+            seller.getHoldings().removeItem(item);
+
             stockTransactions.add(transactionToCommit);
         } else {
             throw new RuntimeException(SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE);
@@ -88,5 +94,18 @@ public class StockExchangeDescriptor {
 
     public Users getUsers() {
         return users;
+    }
+
+    public User getUserByName(String userName){
+        User user = null;
+        for (User userToCheck : users) {
+            if(userToCheck.getName().equals(userName))
+            {
+                user = userToCheck;
+                break;
+            }
+        }
+
+        return user;
     }
 }

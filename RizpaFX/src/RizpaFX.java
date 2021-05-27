@@ -4,7 +4,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import rizpa.RizpaFacade;
 
 import java.net.URL;
 
@@ -21,7 +20,7 @@ public class RizpaFX extends Application {
         RizpaController rizpaController = fxmlLoader.getController();
         rizpaController.setPrimaryStage(primaryStage);
 
-        Scene scene = new Scene(root, 1000, 1000);
+        Scene scene = new Scene(root, 1000, 850);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

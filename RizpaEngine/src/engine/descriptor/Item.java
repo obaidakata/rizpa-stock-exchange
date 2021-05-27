@@ -24,4 +24,15 @@ public class Item {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public void commit(int amount) {
+        if(quantity >= amount)
+        {
+            quantity -= amount;
+        }
+    }
+
+    public void addQuantity(int quantityToAdd) {
+        quantity += quantityToAdd;
+    }
 }

@@ -5,10 +5,7 @@ import engine.command.CommandDirection;
 import engine.command.CommandType;
 import engine.descriptor.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RizpaEngine {
@@ -47,11 +44,7 @@ public class RizpaEngine {
         return transactions;
     }
 
-    public void doLimitCommand(String username,
-                               CommandDirection direction,
-                               String symbol,
-                               int amount,
-                               int limit) {
+    public void doLimitCommand(String username, CommandDirection direction, String symbol, int amount, int limit) {
         String stockSymbol = getSymbol(symbol);
         Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit, new Date());
 
@@ -79,7 +72,9 @@ public class RizpaEngine {
                 command.commit(transactionStockAmount);
                 commandToMatch.commit(transactionStockAmount);
                 int dealPrice = command.getOfferPrice();
-                Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date());
+                String buyerName = commandToMatch.getDirection() == CommandDirection.Buy ? commandToMatch.getUsername() : command.getUsername();
+                String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? commandToMatch.getUsername() : command.getUsername();
+                Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName);
                 descriptor.committedTransaction(deal);
                 Stock stock = getStockBySymbol(symbol);
                 stock.commitDeal(dealPrice, transactionStockAmount);
@@ -214,5 +209,52 @@ public class RizpaEngine {
         this.descriptor = descriptor;
     }
 
+    public Collection<Command> getSellCommands(String symbol)
+    {
+        return descriptor != null ? descriptor.getSellOffers(symbol) : new ArrayList<>();
+    }
 
+    public Collection<Command> getBuyCommands(String symbol)
+    {
+        return descriptor != null ? descriptor.getBuyOffers(symbol) : new ArrayList<>();
+    }
+
+    public Users getAllUsers() {
+        return descriptor.getUsers();
+    }
+
+    public boolean isAllUsersNamesUnique(StockExchangeDescriptor descriptor) {
+        boolean isNamesUnique = true;
+        try {
+            List<String> usersNames = descriptor
+                    .getUsers()
+                    .stream()
+                    .map(User::getName)
+                    .collect(Collectors.toList());
+
+            isNamesUnique = areStringsUnique(usersNames);
+        } catch (NullPointerException ignored) {
+        }
+
+        return isNamesUnique;
+    }
+
+    public boolean isAllUserStockExists(StockExchangeDescriptor descriptor) {
+        boolean isStocksExists = true;
+        HashSet<String> stocks = descriptor.getStocks().getStocks().stream().map(Stock::getSymbol).collect(Collectors.toCollection(HashSet::new));
+        Users users = descriptor.getUsers();
+        for (User user: users){
+            Holdings userHoldings = user.getHoldings();
+            for(Item item: userHoldings) {
+                String stockSymbol = item.getSymbol();
+                if(!stocks.contains(stockSymbol))
+                {
+                    isStocksExists = false;
+                    break;
+                }
+            }
+        }
+
+        return isStocksExists;
+    }
 }

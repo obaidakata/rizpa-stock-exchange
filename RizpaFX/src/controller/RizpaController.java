@@ -56,12 +56,12 @@ public class RizpaController {
         String absolutePath = selectedFile.getAbsolutePath();
         try {
             rizpaFacade.loadNewData(absolutePath);
-            rizpaFacade.doLimitCommand("admin2", "buy", "AMZN", 50, 90);
-            rizpaFacade.doLimitCommand("admin2","buy", "AMZN", 30, 90);
-            rizpaFacade.doLimitCommand("admin2","buy", "AMZN", 10, 90);
-            rizpaFacade.doLimitCommand("admin", "sell", "Googl", 50, 90);
-            rizpaFacade.doLimitCommand("admin","sell", "Googl", 30, 90);
-            rizpaFacade.doLimitCommand("admin","sell", "Googl", 10, 90);
+//            rizpaFacade.doLimitCommand("admin2", "buy", "AMZN", 50, 90);
+//            rizpaFacade.doLimitCommand("admin2","buy", "AMZN", 30, 90);
+//            rizpaFacade.doLimitCommand("admin2","buy", "AMZN", 10, 90);
+//            rizpaFacade.doLimitCommand("admin", "sell", "Googl", 50, 90);
+//            rizpaFacade.doLimitCommand("admin","sell", "Googl", 30, 90);
+//            rizpaFacade.doLimitCommand("admin","sell", "Googl", 10, 90);
             fileStatus.setText("File loaded successfully");
             showUsers();
             showStocks();

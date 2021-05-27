@@ -2,7 +2,6 @@ package rizpa;
 
 import engine.DealData;
 import engine.RizpaEngine;
-import engine.RizpaEngine2;
 import engine.Transaction;
 import engine.command.Command;
 import engine.command.CommandDirection;
@@ -11,7 +10,6 @@ import engine.descriptor.StockExchangeDescriptor;
 import engine.descriptor.Users;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,11 +19,11 @@ public class RizpaFacade {
     private final RizpaDataConverter converter;
     private final RizpaXmlParser parser;
 
-    private final RizpaEngine2 rizpaEngine;
+    private final RizpaEngine rizpaEngine;
 
     public RizpaFacade() {
         this.converter = new RizpaDataConverter();
-        this.rizpaEngine = new RizpaEngine2();
+        this.rizpaEngine = new RizpaEngine();
         this.parser = new RizpaXmlParser();
     }
 
