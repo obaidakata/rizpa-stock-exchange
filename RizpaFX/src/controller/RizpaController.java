@@ -6,10 +6,7 @@ import engine.descriptor.Users;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -20,6 +17,8 @@ import java.net.URL;
 import java.util.HashMap;
 
 public class RizpaController {
+    @FXML private  ListView<String> messagesList;
+
     @FXML private Label fileStatus;
     @FXML private Stage primaryStage;
 
@@ -28,6 +27,8 @@ public class RizpaController {
 
     @FXML private GridPane adminPage;
     @FXML private AdminController adminPageController;
+
+
 
     private RizpaFacade rizpaFacade;
 
@@ -40,7 +41,13 @@ public class RizpaController {
 
     @FXML
     public void initialize() {
+        AppManager.getInstance().setLoggerMethod(this::log);
         this.rizpaFacade = AppManager.getInstance().getRizpaFacade();
+    }
+
+    private void log(String toLog)
+    {
+        messagesList.getItems().add(toLog);
     }
 
     @FXML
@@ -56,15 +63,9 @@ public class RizpaController {
         String absolutePath = selectedFile.getAbsolutePath();
         try {
             rizpaFacade.loadNewData(absolutePath);
-//            rizpaFacade.doLimitCommand("admin2", "buy", "AMZN", 50, 90);
-//            rizpaFacade.doLimitCommand("admin2","buy", "AMZN", 30, 90);
-//            rizpaFacade.doLimitCommand("admin2","buy", "AMZN", 10, 90);
-//            rizpaFacade.doLimitCommand("admin", "sell", "Googl", 50, 90);
-//            rizpaFacade.doLimitCommand("admin","sell", "Googl", 30, 90);
-//            rizpaFacade.doLimitCommand("admin","sell", "Googl", 10, 90);
             fileStatus.setText("File loaded successfully");
-            showUsers();
             showStocks();
+            showUsers();
         } catch (Exception e) {
             fileStatus.setText("File failed to load");
         }
@@ -95,13 +96,12 @@ public class RizpaController {
                     usersPanel.getTabs().add(newUserTab);
                     UserController userController = fxmlLoader.getController();
                     userController.setUser(user);
+                    userController.addOnSubmitListener(adminPageController::onDataChanged);
                     userName2UserController.put(user.getName(), userController);
                 }
             } catch (Exception e) {
                 System.out.println("Resource not valid ");
             }
-
         }
-
     }
 }

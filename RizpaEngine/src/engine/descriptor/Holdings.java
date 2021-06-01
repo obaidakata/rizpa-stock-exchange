@@ -1,17 +1,12 @@
 package engine.descriptor;
 
-import java.util.ArrayList;
+import javafx.collections.ObservableList;
 
-public class Holdings extends ArrayList<Item>{
-    public void commit(String symbol, int amount) {
-        for (Item item : this) {
-            if(item.getSymbol().equalsIgnoreCase(symbol))
-            {
-                item.commit(amount);
-                break;
-            }
-        }
-    }
+import java.util.ArrayList;
+import java.util.List;
+
+public class Holdings extends ArrayList<Item> {
+    private List<Runnable> onChangeListeners = new ArrayList<>();
 
     public int getStockAmount(String stockSymbol) {
         int amount = 0;
@@ -24,6 +19,12 @@ public class Holdings extends ArrayList<Item>{
         }
 
         return amount;
+    }
+
+    private void invokeAllOnChangeListeners() {
+        for (Runnable onChangeListener : onChangeListeners) {
+            onChangeListener.run();
+        }
     }
 
     public void addItem(Item item) {
@@ -45,6 +46,7 @@ public class Holdings extends ArrayList<Item>{
             super.add(item);
         }
 
+        invokeAllOnChangeListeners();
     }
 
     public void removeItem(Item item) {
@@ -64,7 +66,12 @@ public class Holdings extends ArrayList<Item>{
             {
                 super.remove(existsItem);
             }
-        }
 
+            invokeAllOnChangeListeners();
+        }
+    }
+
+    public void addOnChangeListener(Runnable runnable) {
+        onChangeListeners.add(runnable);
     }
 }

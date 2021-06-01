@@ -1,6 +1,8 @@
 package controller;
 
 import appManeger.AppManager;
+import engine.Transaction;
+import engine.descriptor.Holdings;
 import engine.descriptor.Item;
 import engine.descriptor.User;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import rizpa.RizpaFacade;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserController {
@@ -53,7 +57,6 @@ public class UserController {
         amountColumn.setCellValueFactory(item -> new SimpleStringProperty(String.valueOf(item.getValue().getQuantity())));
         stocksPicker.setItems(stocksToChooseFrom);
         priceSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0));
-
     }
 
 
@@ -88,6 +91,7 @@ public class UserController {
         this.user = user;
         username.setText(user.getName());
         holdingStocksTable.getItems().addAll(user.getHoldings());
+        user.getHoldings().addOnChangeListener(this::onHoldingsChanged);
     }
 
     private void updateStocksPicker(String newValue) {
@@ -125,26 +129,66 @@ public class UserController {
 
     public void onSubmitButtonClicked(MouseEvent mouseEvent) {
         String type = commandTypeChoiceBox.getValue();
-        if(type.equals("LMT")) {
+        String symbol = stocksPicker.getValue();
+        String username = user.getName();
+        String commandDirection = commandDirectionChoiceBox.getValue();
+        int amount = amountSpinner.getValue();
 
-            String symbol = stocksPicker.getValue();
-            int amount = 5;
-            rizpaFacade.doLimitCommand(user.getName(),
-                    commandDirectionChoiceBox.getValue(),
-                    symbol,
-                    amount,
-                    priceSpinner.getValue()
-            );
-//
-//            if(commandDirectionChoiceBox.getValue().equalsIgnoreCase("Sell")) {
-//                user.getHoldings().commit(symbol, amount);
-//            }
+        String message = String.format("%s wants to %s %d %s stocks", username, commandDirection, amount, symbol);
+
+        List<Transaction> newTransactions = null;
+        try {
+            if(type.equals("LMT")) {
+                int price = priceSpinner.getValue();
+                message += String.format(", stock price is %d", price);
+                newTransactions = rizpaFacade.doLimitCommand(username, commandDirection, symbol, amount, price);
+            }
+            else if(type.equals("MKT")) {
+            }
+        } catch (Exception e) {
+            message = e.getMessage();
         }
-        else if(type.equals("MKT")) {
+
+        for (Runnable runnable : runnableList) {
+            runnable.run();
         }
-//        System.out.println(username.getText());
-//        System.out.println(stocksPicker.getValue());
-//        System.out.println(commandDirectionChoiceBox.getValue());
-//        System.out.println(commandTypeChoiceBox.getValue());
+
+        AppManager.getInstance().log(message);
+        logNewTransaction(newTransactions);
+
+        if(newTransactions != null && newTransactions.size() > 0)
+        {
+            holdingStocksTable.getItems().clear();
+            holdingStocksTable.getItems().addAll(user.getHoldings());
+        }
+    }
+
+    private void logNewTransaction(List<Transaction> newTransactions)
+    {
+        if(newTransactions != null) {
+            for (Transaction newTransaction : newTransactions) {
+                String transactionDetails = String.format("%s sell to %s %d %s stocks of total of %d",
+                        newTransaction.getSellerName(),
+                        newTransaction.getSellerName(),
+                        newTransaction.getDealData().getAmount(),
+                        newTransaction.getSymbol(),
+                        newTransaction.getDealData().getDealPrice());
+                AppManager.getInstance().log(transactionDetails);
+            }
+        }
+    }
+    private final List<Runnable> runnableList = new ArrayList<>();
+
+    public void addOnSubmitListener(Runnable runnable) {
+        runnableList.add(runnable);
+    }
+
+    private void onHoldingsChanged(){
+        Holdings userHoldings = user.getHoldings();
+        holdingStocksTable.getItems().clear();
+        holdingStocksTable.getItems().addAll(userHoldings);
+        if(userHoldings.getStockAmount(stocksPicker.getValue()) == 0) {
+            updateStocksPicker(commandDirectionChoiceBox.getValue());
+        }
     }
 }

@@ -49,7 +49,11 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public String toString() {
-        return dealData.toString();
+        return "Transaction{" +
+                "dealData=" + dealData +
+                ", buyerName='" + buyerName + '\'' +
+                ", sellerName='" + sellerName + '\'' +
+                '}';
     }
 
     @Override

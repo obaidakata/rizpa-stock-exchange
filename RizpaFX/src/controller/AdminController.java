@@ -3,32 +3,30 @@ package controller;
 import appManeger.AppManager;
 import engine.Transaction;
 import engine.command.Command;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import rizpa.RizpaFacade;
 
+import java.util.Collection;
 
 public class AdminController {
 
     private RizpaFacade rizpaFacade;
     @FXML private ListView<String> stocksList;
 
-    private ObservableList<Command> sellCommands = FXCollections.observableArrayList();
+    private final ObservableList<Command> sellCommands = FXCollections.observableArrayList();
     @FXML private BorderPane sellCommandsTable;
     @FXML private CommandsTableController sellCommandsTableController;
 
-    private ObservableList<Command> buyCommands = FXCollections.observableArrayList();
+    private final ObservableList<Command> buyCommands = FXCollections.observableArrayList();
     @FXML private BorderPane buyCommandsTable;
     @FXML private CommandsTableController buyCommandsTableController;
 
-    private ObservableList<Transaction> transactions = FXCollections.observableArrayList();
+    private final ObservableList<Transaction> transactions = FXCollections.observableArrayList();
     @FXML private BorderPane transactionsTable;
     @FXML private TransactionsTableController transactionsTableController;
 
@@ -36,7 +34,9 @@ public class AdminController {
     public void initialize() {
         this.rizpaFacade = AppManager.getInstance().getRizpaFacade();
         sellCommandsTableController.setTitle("Sell Commands");
+
         sellCommandsTableController.setCommandsList(sellCommands);
+
 
         buyCommandsTableController.setTitle("Buy Commands");
         buyCommandsTableController.setCommandsList(buyCommands);
@@ -49,14 +49,22 @@ public class AdminController {
     }
 
     public void stockSelected(MouseEvent mouseEvent) {
+        onDataChanged();
+    }
+
+    public void onDataChanged(){
         String symbol = stocksList.getSelectionModel().getSelectedItem();
-        sellCommands.clear();
-        sellCommands.addAll(rizpaFacade.getSellCommands(symbol));
 
-        buyCommands.clear();
-        buyCommands.addAll(rizpaFacade.getBuyCommands(symbol));
+        if(symbol != null)
+        {
+            sellCommands.clear();
+            sellCommands.addAll(rizpaFacade.getSellCommands(symbol));
 
-        transactions.clear();
-        transactions.addAll(rizpaFacade.getTransactionsList(symbol));
+            buyCommands.clear();
+            buyCommands.addAll(rizpaFacade.getBuyCommands(symbol));
+
+            transactions.clear();
+            transactions.addAll(rizpaFacade.getTransactionsList(symbol));
+        }
     }
 }

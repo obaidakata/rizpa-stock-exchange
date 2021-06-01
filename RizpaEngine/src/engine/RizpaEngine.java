@@ -44,7 +44,7 @@ public class RizpaEngine {
         return transactions;
     }
 
-    public void doLimitCommand(String username, CommandDirection direction, String symbol, int amount, int limit) {
+    public List<Transaction> doLimitCommand(String username, CommandDirection direction, String symbol, int amount, int limit) throws Exception {
         String stockSymbol = getSymbol(symbol);
         Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit, new Date());
 
@@ -61,11 +61,30 @@ public class RizpaEngine {
             toAddTo = sellCommands;
         }
 
-        matchCommand(newCommand, matchWith, toAddTo);
+        return matchCommand(newCommand, matchWith, toAddTo);
     }
 
-    private void matchCommand(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand) {
+
+    private List<Transaction> matchCommand(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand) throws Exception {
         String symbol = commandToMatch.getStockSymbol();
+
+        if(commandToMatch.getDirection() == CommandDirection.Sell) {
+            String username = commandToMatch.getUsername();
+            User seller = descriptor.getUserByName(username);
+
+            int actualUserHoldingsAmount = seller.getHoldings().getStockAmount(symbol)  - userAmountSellBefore(symbol, username);
+
+            if(actualUserHoldingsAmount  < commandToMatch.getStocksAmount()) {
+                throw new Exception(String.format("%s can't sell  %d %s stocks because the user have only %s",
+                        username,
+                        commandToMatch.getStocksAmount(),
+                        commandToMatch.getStockSymbol(),
+                        actualUserHoldingsAmount
+                        ));
+            }
+        }
+
+        List<Transaction> transactionsMade = new ArrayList<>();
         for (Command command : commands) {
             if (commandToMatch.canCommitPurchase(command)) {
                 int transactionStockAmount = Math.min(command.getStocksAmount(), commandToMatch.getStocksAmount());
@@ -73,9 +92,10 @@ public class RizpaEngine {
                 commandToMatch.commit(transactionStockAmount);
                 int dealPrice = command.getOfferPrice();
                 String buyerName = commandToMatch.getDirection() == CommandDirection.Buy ? commandToMatch.getUsername() : command.getUsername();
-                String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? commandToMatch.getUsername() : command.getUsername();
+                String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? command.getUsername() : commandToMatch.getUsername();
                 Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName);
                 descriptor.committedTransaction(deal);
+                transactionsMade.add(deal);
                 Stock stock = getStockBySymbol(symbol);
                 stock.commitDeal(dealPrice, transactionStockAmount);
             } else if (commandToMatch.getStocksAmount() == 0) {
@@ -86,6 +106,25 @@ public class RizpaEngine {
         if (commandToMatch.getStocksAmount() > 0) {
             whereToTheNewCommand.add(commandToMatch);
         }
+
+        return transactionsMade;
+    }
+
+    private int userAmountSellBefore(String symbol, String username) {
+        int sum = 0;
+        Collection<Command> userSellAmount = getSellCommands(symbol);
+
+        for (Command command : userSellAmount) {
+            if(command.getUsername().equalsIgnoreCase(username)) {
+                sum += command.getStocksAmount();
+            }
+        }
+
+        return sum;
+    }
+
+    private boolean userHaveEnoughHoldings(Command command) {
+        return true;
     }
 
     private String getSymbol(String stockSymbol) {

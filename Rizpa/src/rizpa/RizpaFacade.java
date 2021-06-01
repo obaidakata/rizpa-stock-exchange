@@ -59,9 +59,9 @@ public class RizpaFacade {
         }
     }
 
-    public void doLimitCommand(String username, String direction, String symbol, int amount, int limit) {
+    public List<Transaction> doLimitCommand(String username, String direction, String symbol, int amount, int limit) throws Exception {
         CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
-        rizpaEngine.doLimitCommand(username, commandDirection, symbol, amount, limit);
+        return rizpaEngine.doLimitCommand(username, commandDirection, symbol, amount, limit);
     }
 
     public Collection<String> getAllSymbols() {

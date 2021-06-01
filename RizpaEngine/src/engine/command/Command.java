@@ -5,10 +5,10 @@ import engine.DealData;
 import java.util.Date;
 
 public class Command implements Comparable<Command> {
-    private DealData dealData;
-    private CommandDirection direction;
-    private CommandType type;
-    private String username;
+    private final DealData dealData;
+    private final CommandDirection direction;
+    private final CommandType type;
+    private final String username;
 
     public Command(String username,
                    String stockSymbol,
