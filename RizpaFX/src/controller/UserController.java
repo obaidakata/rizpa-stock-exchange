@@ -5,6 +5,7 @@ import engine.Transaction;
 import engine.descriptor.Holdings;
 import engine.descriptor.Item;
 import engine.descriptor.User;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -68,6 +69,7 @@ public class UserController {
         symbolColumn.setCellValueFactory(item -> new SimpleStringProperty(item.getValue().getSymbol()));
         amountColumn.setCellValueFactory(item -> new SimpleStringProperty(String.valueOf(item.getValue().getQuantity())));
         stocksPicker.setItems(stocksToChooseFrom);
+        stocksPicker.getSelectionModel().selectedItemProperty().addListener(this::updateAmountSpinner);
         priceSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0));
 
         amountSpinner.focusedProperty().addListener((s, ov, nv) -> {
@@ -81,6 +83,10 @@ public class UserController {
         });
     }
 
+    private void updateAmountSpinner(Observable observable) {
+        updateAmountSpinner();
+    }
+
     private <T> void commitEditorText(Spinner<T> spinner) {
         if (!spinner.isEditable()) return;
         String text = spinner.getEditor().getText();
@@ -90,7 +96,6 @@ public class UserController {
             if (converter != null) {
                 T value = converter.fromString(text);
                 valueFactory.setValue(value);
-                System.out.println(value);
             }
         }
     }
@@ -154,7 +159,7 @@ public class UserController {
 
     private void updateAmountSpinner() {
         if (commandDirectionChoiceBox.getValue().equals("Sell")) {
-            String stockSymbol = stocksPicker.getValue();
+            String stockSymbol = stocksPicker.getSelectionModel().getSelectedItem();
             int stockAmount = user.getHoldings().getStockAmount(stockSymbol);
             amountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, stockAmount, 0));
         }
