@@ -64,25 +64,27 @@ public class RizpaEngine {
         return matchCommand(newCommand, matchWith, toAddTo);
     }
 
-
-    private List<Transaction> matchCommand(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand) throws Exception {
+    private void checkIfUserCanCommitPurchase(Command commandToMatch) throws Exception {
         String symbol = commandToMatch.getStockSymbol();
-
-        if(commandToMatch.getDirection() == CommandDirection.Sell) {
+        if (commandToMatch.getDirection() == CommandDirection.Sell) {
             String username = commandToMatch.getUsername();
             User seller = descriptor.getUserByName(username);
 
-            int actualUserHoldingsAmount = seller.getHoldings().getStockAmount(symbol)  - userAmountSellBefore(symbol, username);
+            int actualUserHoldingsAmount = seller.getHoldings().getStockAmount(symbol) - userAmountSellBefore(symbol, username);
 
-            if(actualUserHoldingsAmount  < commandToMatch.getStocksAmount()) {
+            if (actualUserHoldingsAmount < commandToMatch.getStocksAmount()) {
                 throw new Exception(String.format("%s can't sell  %d %s stocks because the user have only %s",
                         username,
                         commandToMatch.getStocksAmount(),
                         commandToMatch.getStockSymbol(),
                         actualUserHoldingsAmount
-                        ));
+                ));
             }
         }
+    }
+
+    private List<Transaction> matchCommand(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand) throws Exception {
+        checkIfUserCanCommitPurchase(commandToMatch);
 
         List<Transaction> transactionsMade = new ArrayList<>();
         for (Command command : commands) {
@@ -91,8 +93,9 @@ public class RizpaEngine {
                 command.commit(transactionStockAmount);
                 commandToMatch.commit(transactionStockAmount);
                 int dealPrice = command.getOfferPrice();
+                String symbol = commandToMatch.getStockSymbol();
                 String buyerName = commandToMatch.getDirection() == CommandDirection.Buy ? commandToMatch.getUsername() : command.getUsername();
-                String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? command.getUsername() : commandToMatch.getUsername();
+                String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? commandToMatch.getUsername() : command.getUsername();
                 Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName);
                 descriptor.committedTransaction(deal);
                 transactionsMade.add(deal);
@@ -115,7 +118,7 @@ public class RizpaEngine {
         Collection<Command> userSellAmount = getSellCommands(symbol);
 
         for (Command command : userSellAmount) {
-            if(command.getUsername().equalsIgnoreCase(username)) {
+            if (command.getUsername().equalsIgnoreCase(username)) {
                 sum += command.getStocksAmount();
             }
         }
@@ -248,13 +251,11 @@ public class RizpaEngine {
         this.descriptor = descriptor;
     }
 
-    public Collection<Command> getSellCommands(String symbol)
-    {
+    public Collection<Command> getSellCommands(String symbol) {
         return descriptor != null ? descriptor.getSellOffers(symbol) : new ArrayList<>();
     }
 
-    public Collection<Command> getBuyCommands(String symbol)
-    {
+    public Collection<Command> getBuyCommands(String symbol) {
         return descriptor != null ? descriptor.getBuyOffers(symbol) : new ArrayList<>();
     }
 
@@ -282,12 +283,11 @@ public class RizpaEngine {
         boolean isStocksExists = true;
         HashSet<String> stocks = descriptor.getStocks().getStocks().stream().map(Stock::getSymbol).collect(Collectors.toCollection(HashSet::new));
         Users users = descriptor.getUsers();
-        for (User user: users){
+        for (User user : users) {
             Holdings userHoldings = user.getHoldings();
-            for(Item item: userHoldings) {
+            for (Item item : userHoldings) {
                 String stockSymbol = item.getSymbol();
-                if(!stocks.contains(stockSymbol))
-                {
+                if (!stocks.contains(stockSymbol)) {
                     isStocksExists = false;
                     break;
                 }

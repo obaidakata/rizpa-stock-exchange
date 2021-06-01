@@ -19,32 +19,45 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserController {
-    
+
     private User user;
     private RizpaFacade rizpaFacade;
+    private final List<Runnable> runnableList = new ArrayList<>();
 
-    @FXML private Button submitButton;
-    @FXML private Label username;
-    @FXML private Label userTotalStocks;
+    @FXML
+    private Button submitButton;
+    @FXML
+    private Label username;
+    @FXML
+    private Label userTotalStocks;
 
-    @FXML private TableView<Item> holdingStocksTable;
+    @FXML
+    private TableView<Item> holdingStocksTable;
 
-    @FXML private TableColumn<Item, String> symbolColumn;
-    @FXML private TableColumn<Item, String> amountColumn;
-    @FXML private TableColumn<Item, String> currentPriceColumn;
+    @FXML
+    private TableColumn<Item, String> symbolColumn;
+    @FXML
+    private TableColumn<Item, String> amountColumn;
+    @FXML
+    private TableColumn<Item, String> currentPriceColumn;
 
-    @FXML private ChoiceBox<String> commandTypeChoiceBox;
+    @FXML
+    private ChoiceBox<String> commandTypeChoiceBox;
 
-    @FXML private ChoiceBox<String> stocksPicker;
-    @FXML private ChoiceBox<String> commandDirectionChoiceBox;
+    @FXML
+    private ChoiceBox<String> stocksPicker;
+    @FXML
+    private ChoiceBox<String> commandDirectionChoiceBox;
 
     private final ObservableList<String> stocksToChooseFrom = FXCollections.observableArrayList();
 
-    @FXML private Spinner<Integer> amountSpinner;
+    @FXML
+    private Spinner<Integer> amountSpinner;
 
     private final SpinnerValueFactory<Integer> spinnerIntegerMaxValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0);
 
-    @FXML private Spinner<Integer> priceSpinner;
+    @FXML
+    private Spinner<Integer> priceSpinner;
 
     @FXML
     public void initialize() {
@@ -61,10 +74,9 @@ public class UserController {
 
 
     private void commandTypeChanged(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-        if(newValue.equals("LMT")) {
+        if (newValue.equals("LMT")) {
             priceSpinner.setDisable(false);
-        }
-        else if(newValue.equals("MKT")) {
+        } else if (newValue.equals("MKT")) {
             priceSpinner.setDisable(true);
         }
     }
@@ -95,12 +107,11 @@ public class UserController {
     }
 
     private void updateStocksPicker(String newValue) {
-        if(newValue.equals("Buy")) {
+        if (newValue.equals("Buy")) {
             stocksToChooseFrom.clear();
             stocksToChooseFrom.addAll(rizpaFacade.getAllSymbols());
             amountSpinner.setValueFactory(spinnerIntegerMaxValue);
-        }
-        else if(newValue.equals("Sell")) {
+        } else if (newValue.equals("Sell")) {
             stocksToChooseFrom.clear();
             stocksToChooseFrom.addAll(user
                     .getHoldings()
@@ -110,7 +121,7 @@ public class UserController {
 
         }
 
-        if(stocksToChooseFrom.size() > 0) {
+        if (stocksToChooseFrom.size() > 0) {
             stocksPicker.setValue(stocksToChooseFrom.get(0));
         }
 
@@ -118,9 +129,8 @@ public class UserController {
 
     }
 
-    private void updateAmountSpinner()
-    {
-        if(commandDirectionChoiceBox.getValue().equals("Sell")) {
+    private void updateAmountSpinner() {
+        if (commandDirectionChoiceBox.getValue().equals("Sell")) {
             String stockSymbol = stocksPicker.getValue();
             int stockAmount = user.getHoldings().getStockAmount(stockSymbol);
             amountSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, stockAmount, 0));
@@ -138,12 +148,11 @@ public class UserController {
 
         List<Transaction> newTransactions = null;
         try {
-            if(type.equals("LMT")) {
+            if (type.equals("LMT")) {
                 int price = priceSpinner.getValue();
                 message += String.format(", stock price is %d", price);
                 newTransactions = rizpaFacade.doLimitCommand(username, commandDirection, symbol, amount, price);
-            }
-            else if(type.equals("MKT")) {
+            } else if (type.equals("MKT")) {
             }
         } catch (Exception e) {
             message = e.getMessage();
@@ -156,20 +165,18 @@ public class UserController {
         AppManager.getInstance().log(message);
         logNewTransaction(newTransactions);
 
-        if(newTransactions != null && newTransactions.size() > 0)
-        {
+        if (newTransactions != null && newTransactions.size() > 0) {
             holdingStocksTable.getItems().clear();
             holdingStocksTable.getItems().addAll(user.getHoldings());
         }
     }
 
-    private void logNewTransaction(List<Transaction> newTransactions)
-    {
-        if(newTransactions != null) {
+    private void logNewTransaction(List<Transaction> newTransactions) {
+        if (newTransactions != null) {
             for (Transaction newTransaction : newTransactions) {
                 String transactionDetails = String.format("%s sell to %s %d %s stocks of total of %d",
                         newTransaction.getSellerName(),
-                        newTransaction.getSellerName(),
+                        newTransaction.getBuyerName(),
                         newTransaction.getDealData().getAmount(),
                         newTransaction.getSymbol(),
                         newTransaction.getDealData().getDealPrice());
@@ -177,17 +184,16 @@ public class UserController {
             }
         }
     }
-    private final List<Runnable> runnableList = new ArrayList<>();
 
     public void addOnSubmitListener(Runnable runnable) {
         runnableList.add(runnable);
     }
 
-    private void onHoldingsChanged(){
+    private void onHoldingsChanged() {
         Holdings userHoldings = user.getHoldings();
         holdingStocksTable.getItems().clear();
         holdingStocksTable.getItems().addAll(userHoldings);
-        if(userHoldings.getStockAmount(stocksPicker.getValue()) == 0) {
+        if (userHoldings.getStockAmount(stocksPicker.getValue()) == 0) {
             updateStocksPicker(commandDirectionChoiceBox.getValue());
         }
     }
