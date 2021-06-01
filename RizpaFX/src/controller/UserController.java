@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.util.StringConverter;
 import rizpa.RizpaFacade;
 
 import java.util.ArrayList;
@@ -24,8 +25,6 @@ public class UserController {
     private RizpaFacade rizpaFacade;
     private final List<Runnable> runnableList = new ArrayList<>();
 
-    @FXML
-    private Button submitButton;
     @FXML
     private Label username;
     @FXML
@@ -70,6 +69,30 @@ public class UserController {
         amountColumn.setCellValueFactory(item -> new SimpleStringProperty(String.valueOf(item.getValue().getQuantity())));
         stocksPicker.setItems(stocksToChooseFrom);
         priceSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0));
+
+        amountSpinner.focusedProperty().addListener((s, ov, nv) -> {
+            if (nv) return;
+            commitEditorText(amountSpinner);
+        });
+
+        priceSpinner.focusedProperty().addListener((s, ov, nv) -> {
+            if (nv) return;
+            commitEditorText(priceSpinner);
+        });
+    }
+
+    private <T> void commitEditorText(Spinner<T> spinner) {
+        if (!spinner.isEditable()) return;
+        String text = spinner.getEditor().getText();
+        SpinnerValueFactory<T> valueFactory = spinner.getValueFactory();
+        if (valueFactory != null) {
+            StringConverter<T> converter = valueFactory.getConverter();
+            if (converter != null) {
+                T value = converter.fromString(text);
+                valueFactory.setValue(value);
+                System.out.println(value);
+            }
+        }
     }
 
 
