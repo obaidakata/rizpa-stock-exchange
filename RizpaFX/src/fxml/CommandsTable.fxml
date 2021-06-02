@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="241.0"
-            prefWidth="384.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.CommandsTableController">
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="241.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CommandsTableController">
     <top>
-        <Label fx:id="title" text="Title" BorderPane.alignment="CENTER"/>
+        <Label fx:id="title" text="Title" BorderPane.alignment="CENTER" />
     </top>
     <center>
         <TableView fx:id="commandsTable" prefHeight="224.0" prefWidth="456.0" BorderPane.alignment="CENTER">
             <columns>
-                <TableColumn fx:id="timeStampColumn" editable="false" minWidth="20.0" prefWidth="85.0" sortable="false"
-                             text="Time Stamp"/>
-                <TableColumn fx:id="typeColumn" editable="false" prefWidth="75.0" sortable="false" text="Type"/>
-                <TableColumn fx:id="amountColumn" editable="false" prefWidth="75.0" sortable="false" text="Amount"/>
-                <TableColumn fx:id="priceColumn" editable="false" prefWidth="75.0" sortable="false" text="Price"/>
-                <TableColumn fx:id="usernameColumn" editable="false" prefWidth="75.0" sortable="false" text="Username"/>
+                <TableColumn fx:id="timeStampColumn" editable="false" minWidth="20.0" prefWidth="85.0" sortable="false" text="Time Stamp" />
+                <TableColumn fx:id="typeColumn" editable="false" prefWidth="75.0" sortable="false" text="Type" />
+                <TableColumn fx:id="amountColumn" editable="false" prefWidth="75.0" sortable="false" text="Amount" />
+                <TableColumn fx:id="priceColumn" editable="false" prefWidth="75.0" sortable="false" text="Price" />
+                <TableColumn fx:id="usernameColumn" editable="false" prefWidth="75.0" sortable="false" text="Username" />
             </columns>
         </TableView>
     </center>

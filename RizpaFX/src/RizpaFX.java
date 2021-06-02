@@ -20,7 +20,7 @@ public class RizpaFX extends Application {
         RizpaController rizpaController = fxmlLoader.getController();
         rizpaController.setPrimaryStage(primaryStage);
 
-        Scene scene = new Scene(root, 1200, 850);
+        Scene scene = new Scene(root, 1050, 850);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
