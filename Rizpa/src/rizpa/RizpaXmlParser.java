@@ -1,8 +1,8 @@
 package rizpa;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+import engine.command.Command;
 import engine.descriptor.StockExchangeDescriptor;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
@@ -10,10 +10,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.TreeSet;
 
-public class RizpaXmlParser {
+public class RizpaXmlParser{
 
     private final String JAXB_XML_PACKAGE_NAME = "rizpa.generated";
     private final String FILE_NOT_FOUND_MESSAGE = "File not found";
@@ -50,8 +53,12 @@ public class RizpaXmlParser {
             throw new Exception("Directory not found");
         }
 
-
         String xmlFile = fileName + File.separator + "savedData.json";
+
+        File file = new File(xmlFile);
+        file.delete();
+
+
         try (Writer writer = new FileWriter(xmlFile)) {
             Gson gson = new GsonBuilder().create();
             gson.toJson(descriptor, writer);

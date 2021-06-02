@@ -59,14 +59,18 @@ public class RizpaFacade {
         }
     }
 
-    public List<Transaction> doLimitCommand(String username, String direction, String symbol, int amount, int limit) throws Exception {
+    public List<Transaction> doLMTCommand(String username, String direction, String symbol, int amount, int limit) throws Exception {
         CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
-        return rizpaEngine.doLimitCommand(username, commandDirection, symbol, amount, limit);
+        return rizpaEngine.doLMTCommand(username, commandDirection, symbol, amount, limit);
+    }
+
+    public List<Transaction> doMKTCommand(String username, String direction, String symbol, int amount) throws Exception {
+        CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
+        return rizpaEngine.doMKTCommand(username, commandDirection, symbol, amount);
     }
 
     public Collection<String> getAllSymbols() {
         return rizpaEngine.getAllSymbols();
-
     }
 
     public List<String> getDirections() {

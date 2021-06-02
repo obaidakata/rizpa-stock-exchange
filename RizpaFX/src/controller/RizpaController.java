@@ -32,7 +32,6 @@ public class RizpaController {
 
     private RizpaFacade rizpaFacade;
 
-    private HashMap<String, controller.UserController> userName2UserController = new HashMap<>();
 
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -64,10 +63,19 @@ public class RizpaController {
         try {
             rizpaFacade.loadNewData(absolutePath);
             fileStatus.setText("File loaded successfully");
+            resetData();
             showStocks();
             showUsers();
         } catch (Exception e) {
             fileStatus.setText("File failed to load");
+        }
+    }
+
+    private void resetData() {
+        if(usersPanel.getTabs().size() > 1) {
+            Tab adminTab = usersPanel.getTabs().get(0);
+            usersPanel.getTabs().clear();
+            usersPanel.getTabs().add(adminTab);
         }
     }
 
@@ -82,10 +90,6 @@ public class RizpaController {
         Users users = rizpaFacade.getUsers();
         if(users != null)
         {
-            if(usersPanel.getTabs().size() > 1) {
-                usersPanel.getTabs().remove(1);
-            }
-
             URL url = getClass().getResource("/fxml/UserFX.fxml");
             try {
                 for (User user : users) {
@@ -97,7 +101,6 @@ public class RizpaController {
                     UserController userController = fxmlLoader.getController();
                     userController.setUser(user);
                     userController.addOnSubmitListener(adminPageController::onDataChanged);
-                    userName2UserController.put(user.getName(), userController);
                 }
             } catch (Exception e) {
                 System.out.println("Resource not valid ");

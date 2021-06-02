@@ -2,9 +2,10 @@ package engine.command;
 
 import engine.DealData;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Command implements Comparable<Command> {
+public class Command implements Comparable<Command>, Serializable {
     private final DealData dealData;
     private final CommandDirection direction;
     private final CommandType type;
@@ -15,13 +16,12 @@ public class Command implements Comparable<Command> {
                    CommandDirection direction,
                    CommandType type,
                    int stocksAmount,
-                   int offerPrice,
-                   Date timeStamp) {
+                   int offerPrice) {
         this.username = username;
         dealData = new DealData(stockSymbol,
                 offerPrice,
                 stocksAmount,
-                timeStamp);
+                new Date());
         this.direction = direction;
         this.type = type;
     }
@@ -77,7 +77,13 @@ public class Command implements Comparable<Command> {
         return result;
     }
 
-    public boolean canCommitPurchase(Command toCompare) {
+    public boolean canCommitPurchase(int amount, String symbol) {
+        boolean canCommitPurchase = getStocksAmount() > 0 && amount > 0;
+        canCommitPurchase = canCommitPurchase && getStockSymbol().equals(symbol);
+        return canCommitPurchase;
+    }
+
+    public boolean canCommitPurchaseBasedOnPrice(Command toCompare) {
         boolean canCommitPurchase = getStocksAmount() > 0 && toCompare.getStocksAmount() > 0;
         canCommitPurchase = canCommitPurchase && getStockSymbol().equals(toCompare.getStockSymbol());
         if (direction == CommandDirection.Buy && toCompare.getDirection() == CommandDirection.Sell) {
@@ -97,7 +103,8 @@ public class Command implements Comparable<Command> {
 
         if (dealData != null ? !dealData.equals(command.dealData) : command.dealData != null) return false;
         if (direction != command.direction) return false;
-        return type == command.type;
+        if (type != command.type) return false;
+        return username != null ? username.equals(command.username) : command.username == null;
     }
 
     @Override
@@ -105,6 +112,7 @@ public class Command implements Comparable<Command> {
         int result = dealData != null ? dealData.hashCode() : 0;
         result = 31 * result + (direction != null ? direction.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
         return result;
     }
 
@@ -118,8 +126,8 @@ public class Command implements Comparable<Command> {
     }
 
     @Override
-    public int compareTo(Command o) {
-        return 0;
+    public int compareTo(Command command) {
+        return dealData.compareTo(command.dealData);
     }
 
     public String getUsername() {

@@ -1,8 +1,8 @@
 package engine.descriptor;
 
 public class Stock {
-    private String symbol;
-    private String companyName;
+    private final String symbol;
+    private final String companyName;
     private int price;
     private long sumOfAllTransactions = 0;
     private static int longestSymbolLength = 0;

@@ -29,6 +29,7 @@ public class TransactionsTableController {
         priceColumn.setCellValueFactory(transaction -> new SimpleStringProperty(String.valueOf(transaction.getValue().getDealData().getPrice())));
         buyerNameColumn.setCellValueFactory(transaction -> new SimpleStringProperty(String.valueOf(transaction.getValue().getBuyerName())));
         sellerNameColumn.setCellValueFactory(transaction -> new SimpleStringProperty(String.valueOf(transaction.getValue().getSellerName())));
+        typeColumn.setCellValueFactory(transaction -> new SimpleStringProperty(String.valueOf(transaction.getValue().getType())));
     }
 
     public void setTransactionsList(ObservableList<Transaction> transactions) {

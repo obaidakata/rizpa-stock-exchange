@@ -1,5 +1,7 @@
 package engine;
 
+import engine.command.CommandType;
+
 import java.util.Date;
 
 public class Transaction implements Comparable<Transaction> {
@@ -8,21 +10,15 @@ public class Transaction implements Comparable<Transaction> {
     private final String buyerName;
     private final String sellerName;
 
-    public Transaction(String symbol,
-                       int price,
-                       int amount,
-                       Date timeStamp) {
-        dealData = new DealData(symbol, price, amount, timeStamp);
-        this.buyerName = "Admin";
-        this.sellerName = "Admin";
-    }
+    private final CommandType type;
 
     public Transaction(String symbol,
                        int price,
                        int amount,
                        Date timeStamp,
                        String buyerName,
-                       String sellerName) {
+                       String sellerName, CommandType type) {
+        this.type = type;
         dealData = new DealData(symbol, price, amount, timeStamp);
         this.sellerName = sellerName;
         this.buyerName = buyerName;
@@ -71,5 +67,9 @@ public class Transaction implements Comparable<Transaction> {
 
     public String getSellerName() {
         return sellerName;
+    }
+
+    public CommandType getType() {
+        return type;
     }
 }

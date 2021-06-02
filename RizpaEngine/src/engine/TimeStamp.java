@@ -1,11 +1,11 @@
 package engine;
 
+import java.beans.Transient;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TimeStamp {
     private Date value;
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SSS");
 
     public TimeStamp(Date timeStamp) {
         this.value = timeStamp;
@@ -13,7 +13,7 @@ public class TimeStamp {
 
     @Override
     public String toString() {
-        return simpleDateFormat.format(value);
+        return new SimpleDateFormat("HH:mm:ss:SSS").format(value);
     }
 
     public Date getValue() {

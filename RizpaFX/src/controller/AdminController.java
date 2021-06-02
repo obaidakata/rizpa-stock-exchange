@@ -5,6 +5,7 @@ import engine.Transaction;
 import engine.command.Command;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
@@ -45,7 +46,7 @@ public class AdminController {
     }
 
     public void showStocks() {
-        stocksList.getItems().addAll(rizpaFacade.getAllSymbols());
+        stocksList.getItems().setAll(rizpaFacade.getAllSymbols());
     }
 
     public void stockSelected(MouseEvent mouseEvent) {
@@ -65,6 +66,14 @@ public class AdminController {
 
             transactions.clear();
             transactions.addAll(rizpaFacade.getTransactionsList(symbol));
+        }
+    }
+
+    public void onSaveButton(ActionEvent actionEvent) {
+        try {
+            rizpaFacade.saveAllData("/Users/obaidakata/Downloads");
+        } catch (Exception e) {
+            System.out.println("Failed to save file");
         }
     }
 }

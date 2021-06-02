@@ -6,6 +6,7 @@ import engine.descriptor.Holdings;
 import engine.descriptor.Item;
 import engine.descriptor.User;
 import javafx.beans.Observable;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,11 +17,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 import rizpa.RizpaFacade;
 
+import javax.script.Bindings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserController {
+
 
     private User user;
     private RizpaFacade rizpaFacade;
@@ -30,6 +33,9 @@ public class UserController {
     private Label username;
     @FXML
     private Label userTotalStocks;
+
+    @FXML
+    private Button submitButton;
 
     @FXML
     private TableView<Item> holdingStocksTable;
@@ -68,6 +74,7 @@ public class UserController {
         commandTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener(this::commandTypeChanged);
         symbolColumn.setCellValueFactory(item -> new SimpleStringProperty(item.getValue().getSymbol()));
         amountColumn.setCellValueFactory(item -> new SimpleStringProperty(String.valueOf(item.getValue().getQuantity())));
+        currentPriceColumn.setCellValueFactory(item -> new SimpleStringProperty(String.valueOf(rizpaFacade.getStockBySymbol(item.getValue().getSymbol()).getPrice())));
         stocksPicker.setItems(stocksToChooseFrom);
         stocksPicker.getSelectionModel().selectedItemProperty().addListener(this::updateAmountSpinner);
         priceSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, Integer.MAX_VALUE, 0));
@@ -132,6 +139,7 @@ public class UserController {
         username.setText(user.getName());
         holdingStocksTable.getItems().addAll(user.getHoldings());
         user.getHoldings().addOnChangeListener(this::onHoldingsChanged);
+        updateUserTotalStocks();
     }
 
     private void updateStocksPicker(String newValue) {
@@ -179,8 +187,9 @@ public class UserController {
             if (type.equals("LMT")) {
                 int price = priceSpinner.getValue();
                 message += String.format(", stock price is %d", price);
-                newTransactions = rizpaFacade.doLimitCommand(username, commandDirection, symbol, amount, price);
+                newTransactions = rizpaFacade.doLMTCommand(username, commandDirection, symbol, amount, price);
             } else if (type.equals("MKT")) {
+                newTransactions = rizpaFacade.doMKTCommand(username, commandDirection, symbol, amount);
             }
         } catch (Exception e) {
             message = e.getMessage();
@@ -224,5 +233,17 @@ public class UserController {
         if (userHoldings.getStockAmount(stocksPicker.getValue()) == 0) {
             updateStocksPicker(commandDirectionChoiceBox.getValue());
         }
+
+        updateUserTotalStocks();
+    }
+
+    private void updateUserTotalStocks() {
+        Holdings userHoldings = user.getHoldings();
+        int totalSum = userHoldings
+                .stream()
+                .map(item -> rizpaFacade.getStockBySymbol(item.getSymbol()).getPrice() * item.getQuantity())
+                .reduce(Integer::sum)
+                .orElse(0);
+        userTotalStocks.setText(String.valueOf(totalSum));
     }
 }

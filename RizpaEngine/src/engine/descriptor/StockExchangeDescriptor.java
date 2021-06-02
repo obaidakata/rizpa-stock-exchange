@@ -3,11 +3,12 @@ package engine.descriptor;
 import engine.Transaction;
 import engine.command.Command;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-public class StockExchangeDescriptor {
+public class StockExchangeDescriptor implements Serializable {
     private Users users;
     private Stocks stocks;
     private HashMap<String, TreeSet<Command>> stockSymbol2BuyOffers;

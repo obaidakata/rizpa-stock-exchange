@@ -44,9 +44,52 @@ public class RizpaEngine {
         return transactions;
     }
 
-    public List<Transaction> doLimitCommand(String username, CommandDirection direction, String symbol, int amount, int limit) throws Exception {
+
+    public List<Transaction> doMKTCommand(String username, CommandDirection direction, String symbol, int amount){
         String stockSymbol = getSymbol(symbol);
-        Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit, new Date());
+        Stock stock = getStockBySymbol(stockSymbol);
+        Collection<Command> buyCommands = descriptor.getBuyOffers(stockSymbol);
+        Collection<Command> sellCommands = descriptor.getSellOffers(stockSymbol);
+        Collection<Command> matchWith;
+        Collection<Command> toAddTo;
+
+        if (direction == CommandDirection.Buy) {
+            matchWith = sellCommands;
+            toAddTo = buyCommands;
+        } else {
+            matchWith = buyCommands;
+            toAddTo = sellCommands;
+        }
+
+        List<Transaction> transactionsMade = new ArrayList<>();
+        for (Command command : matchWith) {
+            if(command.canCommitPurchase(amount, symbol))
+            {
+                int transactionStockAmount = Math.min(command.getStocksAmount(), amount);
+                command.commit(transactionStockAmount);
+                amount -= transactionStockAmount;
+                int dealPrice = command.getOfferPrice();
+                String buyerName = direction == CommandDirection.Buy ? username : command.getUsername();
+                String sellerName = direction == CommandDirection.Sell ? username : command.getUsername();
+                Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.MKT);
+                stock.commitDeal(dealPrice, transactionStockAmount);
+                descriptor.committedTransaction(deal);
+                transactionsMade.add(deal);
+            }
+        }
+
+        matchWith.removeIf(command -> command.getStocksAmount() == 0);
+
+        if(amount > 0) {
+            toAddTo.add(new Command(username, stockSymbol, direction, CommandType.MKT, amount, stock.getPrice()));
+        }
+
+        return transactionsMade;
+    }
+
+    public List<Transaction> doLMTCommand(String username, CommandDirection direction, String symbol, int amount, int limit) throws Exception {
+        String stockSymbol = getSymbol(symbol);
+        Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit);
 
         Collection<Command> buyCommands = descriptor.getBuyOffers(stockSymbol);
         Collection<Command> sellCommands = descriptor.getSellOffers(stockSymbol);
@@ -88,7 +131,7 @@ public class RizpaEngine {
 
         List<Transaction> transactionsMade = new ArrayList<>();
         for (Command command : commands) {
-            if (commandToMatch.canCommitPurchase(command)) {
+            if (commandToMatch.canCommitPurchaseBasedOnPrice(command)) {
                 int transactionStockAmount = Math.min(command.getStocksAmount(), commandToMatch.getStocksAmount());
                 command.commit(transactionStockAmount);
                 commandToMatch.commit(transactionStockAmount);
@@ -96,11 +139,11 @@ public class RizpaEngine {
                 String symbol = commandToMatch.getStockSymbol();
                 String buyerName = commandToMatch.getDirection() == CommandDirection.Buy ? commandToMatch.getUsername() : command.getUsername();
                 String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? commandToMatch.getUsername() : command.getUsername();
-                Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName);
-                descriptor.committedTransaction(deal);
-                transactionsMade.add(deal);
+                Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.LMT);
                 Stock stock = getStockBySymbol(symbol);
                 stock.commitDeal(dealPrice, transactionStockAmount);
+                descriptor.committedTransaction(deal);
+                transactionsMade.add(deal);
             } else if (commandToMatch.getStocksAmount() == 0) {
                 break;
             }
