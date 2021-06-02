@@ -52,7 +52,7 @@ public class RizpaController {
     @FXML
     public void loadFile(ActionEvent event){
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select words file");
+        fileChooser.setTitle("Select Rizpa file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("xml file", "*.xml"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null) {
@@ -62,12 +62,12 @@ public class RizpaController {
         String absolutePath = selectedFile.getAbsolutePath();
         try {
             rizpaFacade.loadNewData(absolutePath);
-            fileStatus.setText("File loaded successfully");
+            log("File loaded successfully");
             resetData();
             showStocks();
             showUsers();
         } catch (Exception e) {
-            fileStatus.setText("File failed to load");
+            log(e.getMessage());
         }
     }
 
