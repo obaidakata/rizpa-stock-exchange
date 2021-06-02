@@ -1,4 +1,4 @@
-package appManeger;
+package app.appManeger;
 
 import rizpa.RizpaFacade;
 

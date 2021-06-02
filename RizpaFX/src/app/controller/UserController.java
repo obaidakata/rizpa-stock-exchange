@@ -1,12 +1,11 @@
-package controller;
+package app.controller;
 
-import appManeger.AppManager;
+import app.appManeger.AppManager;
 import engine.Transaction;
 import engine.descriptor.Holdings;
 import engine.descriptor.Item;
 import engine.descriptor.User;
 import javafx.beans.Observable;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 import rizpa.RizpaFacade;
 
-import javax.script.Bindings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

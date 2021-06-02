@@ -1,4 +1,4 @@
-package controller;
+package app.controller;
 
 import engine.command.Command;
 import javafx.beans.property.SimpleStringProperty;

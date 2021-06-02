@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: 
-Class-Path: gson-2.1.jar
+Main-Class: app.RizpaFX
+Class-Path: Rizpa.jar gson-2.1.jar
 

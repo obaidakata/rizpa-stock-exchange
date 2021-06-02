@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="548.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="548.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.UserController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="281.0" minWidth="10.0" prefWidth="248.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="412.0" minWidth="10.0" prefWidth="241.0" />
@@ -37,7 +37,7 @@
                 <Label fx:id="userTotalStocks" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
         </GridPane>
-        <TableView fx:id="holdingStocksTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <TableView fx:id="holdingStocksTable" prefHeight="261.0" prefWidth="405.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <columns>
                 <TableColumn fx:id="symbolColumn" prefWidth="75.0" text="Symbol" />
                 <TableColumn fx:id="amountColumn" prefWidth="75.0" text="Amount" />

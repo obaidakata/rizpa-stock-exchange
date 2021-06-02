@@ -1,6 +1,6 @@
-package controller;
+package app.controller;
 
-import appManeger.AppManager;
+import app.appManeger.AppManager;
 import engine.descriptor.User;
 import engine.descriptor.Users;
 import javafx.event.ActionEvent;
@@ -14,7 +14,6 @@ import rizpa.RizpaFacade;
 
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
 
 public class RizpaController {
     @FXML private  ListView<String> messagesList;
@@ -90,7 +89,7 @@ public class RizpaController {
         Users users = rizpaFacade.getUsers();
         if(users != null)
         {
-            URL url = getClass().getResource("/fxml/UserFX.fxml");
+            URL url = getClass().getResource("/app/fxml/UserFX.fxml");
             try {
                 for (User user : users) {
                     FXMLLoader fxmlLoader = new FXMLLoader();

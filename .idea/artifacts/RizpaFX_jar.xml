@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact name="RizpaFX:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/RizpaFX_jar</output-path>
+  <artifact build-on-make="true" name="RizpaFX:jar">
+    <output-path>$PROJECT_DIR$/batch</output-path>
     <root id="root">
       <element id="archive" name="RizpaFX.jar">
         <element id="module-output" name="RizpaFX" />

@@ -1,6 +1,6 @@
-package controller;
+package app.controller;
 
-import appManeger.AppManager;
+import app.appManeger.AppManager;
 import engine.Transaction;
 import engine.command.Command;
 import javafx.collections.FXCollections;
@@ -11,8 +11,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import rizpa.RizpaFacade;
-
-import java.util.Collection;
 
 public class AdminController {
 

@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact name="RizpaEngine:jar">
+  <artifact build-on-make="true" name="RizpaEngine:jar">
     <output-path>$PROJECT_DIR$/batch</output-path>
     <root id="root">
       <element id="archive" name="RizpaEngine.jar">

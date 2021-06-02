@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact name="Rizpa:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Rizpa_jar</output-path>
+  <artifact build-on-make="true" name="Rizpa:jar">
+    <output-path>$PROJECT_DIR$/batch</output-path>
     <root id="root">
       <element id="archive" name="Rizpa.jar">
         <element id="module-output" name="Rizpa" />
