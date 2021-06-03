@@ -98,11 +98,27 @@ public class UserController {
         SpinnerValueFactory<T> valueFactory = spinner.getValueFactory();
         if (valueFactory != null) {
             StringConverter<T> converter = valueFactory.getConverter();
-            if (converter != null) {
+            if (converter != null && isNumeric(text)) {
                 T value = converter.fromString(text);
                 valueFactory.setValue(value);
             }
+            else
+            {
+                spinner.getEditor().setText("0");
+            }
         }
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -184,7 +200,7 @@ public class UserController {
         try {
             if (type.equals("LMT")) {
                 int price = priceSpinner.getValue();
-                message += String.format(", stock price is %d", price);
+                message += String.format(", each stock for %d", price);
                 newTransactions = rizpaFacade.doLMTCommand(username, commandDirection, symbol, amount, price);
             } else if (type.equals("MKT")) {
                 newTransactions = rizpaFacade.doMKTCommand(username, commandDirection, symbol, amount);
@@ -209,13 +225,17 @@ public class UserController {
     private void logNewTransaction(List<Transaction> newTransactions) {
         if (newTransactions != null) {
             for (Transaction newTransaction : newTransactions) {
-                String transactionDetails = String.format("%s sell to %s %d %s stocks of total of %d",
+                String transactionDetails = String.format("%s sold to %s %d %s, for a total of %d",
                         newTransaction.getSellerName(),
                         newTransaction.getBuyerName(),
                         newTransaction.getDealData().getAmount(),
                         newTransaction.getSymbol(),
                         newTransaction.getDealData().getDealPrice());
                 AppManager.getInstance().log(transactionDetails);
+            }
+            if(newTransactions.size() == 0)
+            {
+                AppManager.getInstance().log("No Transactions has been made.");
             }
         }
     }
