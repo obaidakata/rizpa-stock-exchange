@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -11,7 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane prefHeight="845.0" prefWidth="1045.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.RizpaController">
+<ScrollPane prefHeight="845.0" prefWidth="1045.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.RizpaController">
    <content>
       <GridPane prefHeight="836.0" prefWidth="1045.0">
          <columnConstraints>
@@ -27,7 +30,7 @@
                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
@@ -35,9 +38,21 @@
                </rowConstraints>
                <children>
                   <Label alignment="CENTER" text="Rizpa Stock Exchange" textAlignment="CENTER" GridPane.columnIndex="2" />
-                  <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFile" text="Load File" />
-                  <Label fx:id="fileStatus" prefHeight="17.0" prefWidth="175.0" GridPane.columnIndex="1" />
+                  <Button fx:id="loadFileButton" mnemonicParsing="false" onAction="#loadFileButton" text="Load File" />
                   <Label text="System Messages" GridPane.columnIndex="4" />
+                  <GridPane GridPane.columnIndex="1">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ProgressBar fx:id="taskProgressBar" prefWidth="200.0" progress="0.0" />
+                        <Label fx:id="progressPercentLabel" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
                </children>
             </GridPane>
             <GridPane prefHeight="794.0" prefWidth="1036.0" GridPane.rowIndex="1">
