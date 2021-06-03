@@ -27,11 +27,7 @@ public class RizpaController {
     @FXML private GridPane adminPage;
     @FXML private AdminController adminPageController;
 
-
-
     private RizpaFacade rizpaFacade;
-
-
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
