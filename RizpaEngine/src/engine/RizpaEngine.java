@@ -76,6 +76,9 @@ public class RizpaEngine {
                 descriptor.committedTransaction(deal);
                 transactionsMade.add(deal);
             }
+            else if (amount == 0) {
+                break;
+            }
         }
 
         matchWith.removeIf(command -> command.getStocksAmount() == 0);
