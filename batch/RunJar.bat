@@ -1,2 +1,2 @@
-java -jar RizpaUI.jar 
+java -jar RizpaFX.jar 
 
