@@ -1,20 +1,12 @@
 package rizpa;
 
 
-import com.google.gson.*;
-import engine.command.Command;
-import engine.descriptor.StockExchangeDescriptor;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.TreeSet;
 
 public class RizpaXmlParser{
 
@@ -22,7 +14,6 @@ public class RizpaXmlParser{
     private final String FILE_NOT_FOUND_MESSAGE = "File not found";
     private final String FILE_ISNT_XML_MESSAGE = "File format is not xml";
     private final String FILE_EXTENSTION = ".xml";
-    private Gson gson = new Gson();
 
     public RizpaStockExchangeDescriptor parseOldData(String filePath) throws Exception {
         if (filePath == null) {
@@ -46,35 +37,5 @@ public class RizpaXmlParser{
         JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_XML_PACKAGE_NAME);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         return (RizpaStockExchangeDescriptor) unmarshaller.unmarshal(in);
-    }
-
-    public String saveAllData(String fileName, StockExchangeDescriptor descriptor) throws Exception {
-        if (!Files.isDirectory(Paths.get(fileName))) {
-            throw new Exception("Directory not found");
-        }
-
-        String xmlFile = fileName + File.separator + "savedData.json";
-
-        File file = new File(xmlFile);
-        file.delete();
-
-
-        try (Writer writer = new FileWriter(xmlFile)) {
-            Gson gson = new GsonBuilder().create();
-            gson.toJson(descriptor, writer);
-        }
-
-        return xmlFile;
-    }
-
-    public StockExchangeDescriptor loadPreviousData(String fileName) throws Exception {
-        File filePath = new File(fileName);
-        if (!filePath.exists()) {
-            throw new Exception(FILE_NOT_FOUND_MESSAGE);
-        } else if (filePath.isDirectory()) {
-            throw new Exception("Must be file not directory");
-        }
-
-        return gson.fromJson(new FileReader(fileName), StockExchangeDescriptor.class);
     }
 }

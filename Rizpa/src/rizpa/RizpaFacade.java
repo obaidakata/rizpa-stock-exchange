@@ -108,15 +108,6 @@ public class RizpaFacade {
         return rizpaEngine.getSumTransactions(stockSymbol);
     }
 
-
-    public String saveAllData(String fileName) throws Exception {
-        return parser.saveAllData(fileName, rizpaEngine.getDescriptor());
-    }
-
-    public void loadPreviousData(String fileName) throws Exception {
-        rizpaEngine.setDescriptor(parser.loadPreviousData(fileName));
-    }
-
     public Users getUsers(){
         return rizpaEngine.getAllUsers();
     }
