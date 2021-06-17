@@ -126,6 +126,7 @@ public class RizpaController extends Task<Boolean>{
     }
 
     public void loadXML() {
+        progressPercentLabel.setText("0%");
         currentRunningTask = this;
         bindTaskToUIComponents(currentRunningTask);
         thread = new Thread(currentRunningTask);
