@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Rizpa/Rizpa.iml" filepath="$PROJECT_DIR$/Rizpa/Rizpa.iml" />
       <module fileurl="file://$PROJECT_DIR$/RizpaEngine/RizpaEngine.iml" filepath="$PROJECT_DIR$/RizpaEngine/RizpaEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RizpaWeb/RizpaWeb.iml" filepath="$PROJECT_DIR$/RizpaWeb/RizpaWeb.iml" />
     </modules>
   </component>
 </project>
