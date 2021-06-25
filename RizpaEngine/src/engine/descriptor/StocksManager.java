@@ -8,16 +8,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-public class StockExchangeDescriptor implements Serializable {
-    private Users users;
+public class StocksManager implements Serializable {
     private Stocks stocks;
     private HashMap<String, TreeSet<Command>> stockSymbol2BuyOffers;
     private HashMap<String, TreeSet<Command>> stockSymbol2SellOffers;
     private HashMap<String, TreeSet<Transaction>> stockSymbol2transactions;
     private final String SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE = "Symbol not found";
 
-    public StockExchangeDescriptor(Stocks stocks, Users users) {
-        this.users = users;
+    public StocksManager(Stocks stocks) {
         this.stocks = stocks;
         this.stockSymbol2BuyOffers = new HashMap<>();
         this.stockSymbol2SellOffers = new HashMap<>();
@@ -47,12 +45,10 @@ public class StockExchangeDescriptor implements Serializable {
         return transactions;
     }
 
-    public void committedTransaction(Transaction transactionToCommit) {
+    public void committedTransaction(Transaction transactionToCommit, User buyer, User seller) {
         String symbol = transactionToCommit.getSymbol();
         TreeSet<Transaction> stockTransactions = stockSymbol2transactions.get(symbol);
         if (stockTransactions != null) {
-            User buyer = getUserByName(transactionToCommit.getBuyerName());
-            User seller = getUserByName(transactionToCommit.getSellerName());
             Item item = new Item(symbol, transactionToCommit.getDealData().getAmount());
             buyer.getHoldings().addItem(item);
             seller.getHoldings().removeItem(item);
@@ -83,7 +79,7 @@ public class StockExchangeDescriptor implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        StockExchangeDescriptor that = (StockExchangeDescriptor) o;
+        StocksManager that = (StocksManager) o;
 
         return stocks != null ? stocks.equals(that.stocks) : that.stocks == null;
     }
@@ -93,20 +89,5 @@ public class StockExchangeDescriptor implements Serializable {
         return stocks != null ? stocks.hashCode() : 0;
     }
 
-    public Users getUsers() {
-        return users;
-    }
 
-    public User getUserByName(String userName){
-        User user = null;
-        for (User userToCheck : users) {
-            if(userToCheck.getName().equals(userName))
-            {
-                user = userToCheck;
-                break;
-            }
-        }
-
-        return user;
-    }
 }

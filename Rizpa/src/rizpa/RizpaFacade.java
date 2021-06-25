@@ -6,7 +6,7 @@ import engine.Transaction;
 import engine.command.Command;
 import engine.command.CommandDirection;
 import engine.descriptor.Stock;
-import engine.descriptor.StockExchangeDescriptor;
+import engine.descriptor.StocksManager;
 import engine.descriptor.Users;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
@@ -40,12 +40,12 @@ public class RizpaFacade {
 
     public void loadNewData(String filePath) throws Exception {
         RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parseOldData(filePath);
-        StockExchangeDescriptor descriptor = converter.convert(newRizpaStockExchangeDescriptor);
+        StocksManager descriptor = converter.convert(newRizpaStockExchangeDescriptor);
         checkData(descriptor);
         rizpaEngine.loadNewData(descriptor);
     }
 
-    private void checkData(StockExchangeDescriptor descriptor) throws Exception {
+    private void checkData(StocksManager descriptor) throws Exception {
         if (!rizpaEngine.isAllStocksSymbolUnique(descriptor)) {
             String SYMBOLS_ARE_NOT_UNIQUE = "Symbols are not unique";
             throw new Exception(SYMBOLS_ARE_NOT_UNIQUE);

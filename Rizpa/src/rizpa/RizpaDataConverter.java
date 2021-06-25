@@ -8,12 +8,10 @@ import java.util.List;
 
 public class RizpaDataConverter {
 
-    public StockExchangeDescriptor convert(RizpaStockExchangeDescriptor descriptor) {
+    public StocksManager convert(RizpaStockExchangeDescriptor descriptor) {
         List<Stock> stockList = getStocks(descriptor);
-        Users users = getUsers(descriptor);
-
         Stocks stocks = new Stocks(stockList);
-        return new StockExchangeDescriptor(stocks, users);
+        return new StocksManager(stocks);
     }
 
     private List<Stock> getStocks(RizpaStockExchangeDescriptor descriptor) {
@@ -34,32 +32,5 @@ public class RizpaDataConverter {
         }
 
         return stocksList;
-    }
-
-    private Users getUsers(RizpaStockExchangeDescriptor descriptor) {
-        Users users = new Users();
-        if (descriptor != null) {
-            RseUsers rseUsers = descriptor.getRseUsers();
-            if(rseUsers != null) {
-                List<RseUser> temporaryUsers = rseUsers.getRseUser();
-                if(temporaryUsers != null) {
-                    for(RseUser rseUser : temporaryUsers) {
-                        RseHoldings rseHoldings = rseUser.getRseHoldings();
-                        Holdings holdings = new Holdings();
-                        if(rseHoldings != null) {
-                            for (RseItem rseItem : rseHoldings.getRseItem()) {
-                                holdings.add(new Item(
-                                        rseItem.getSymbol(),
-                                        rseItem.getQuantity()));
-                            }
-                        }
-
-                        users.add(new User(rseUser.getName(), holdings));
-                    }
-                }
-            }
-        }
-
-        return users;
     }
 }

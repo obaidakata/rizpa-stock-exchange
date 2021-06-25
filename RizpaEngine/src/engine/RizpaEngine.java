@@ -9,18 +9,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RizpaEngine {
-    private StockExchangeDescriptor descriptor;
+    private StocksManager stocksManager;
+    private UsersManager usersManager;
 
-    public void loadNewData(StockExchangeDescriptor descriptor) {
-        this.descriptor = descriptor;
+    public void loadNewData(StocksManager descriptor) {
+        this.stocksManager = descriptor;
     }
 
     public List<Stock> getAllStocks() {
         List<Stock> stocks = null;
-        if (descriptor != null) {
-            Stocks stocks1 = descriptor.getStocks();
+        if (stocksManager != null) {
+            Stocks stocks1 = stocksManager.getStocks();
             if (stocks1 != null) {
-                stocks = descriptor.getStocks().getStocks();
+                stocks = stocksManager.getStocks().getStocks();
             }
         }
 
@@ -33,8 +34,8 @@ public class RizpaEngine {
 
     public Collection<Transaction> getStockTransactions(String symbol) {
         Collection<Transaction> transactions = null;
-        if (descriptor != null) {
-            transactions = descriptor.getStockTransactions(symbol);
+        if (stocksManager != null) {
+            transactions = stocksManager.getStockTransactions(symbol);
         }
 
         if (transactions == null) {
@@ -48,8 +49,8 @@ public class RizpaEngine {
     public List<Transaction> doMKTCommand(String username, CommandDirection direction, String symbol, int amount){
         String stockSymbol = getSymbol(symbol);
         Stock stock = getStockBySymbol(stockSymbol);
-        Collection<Command> buyCommands = descriptor.getBuyOffers(stockSymbol);
-        Collection<Command> sellCommands = descriptor.getSellOffers(stockSymbol);
+        Collection<Command> buyCommands = stocksManager.getBuyOffers(stockSymbol);
+        Collection<Command> sellCommands = stocksManager.getSellOffers(stockSymbol);
         Collection<Command> matchWith;
         Collection<Command> toAddTo;
 
@@ -73,7 +74,7 @@ public class RizpaEngine {
                 String sellerName = direction == CommandDirection.Sell ? username : command.getUsername();
                 Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.MKT);
                 stock.commitDeal(dealPrice, transactionStockAmount);
-                descriptor.committedTransaction(deal);
+                stocksManager.committedTransaction(deal, usersManager.getUserByName(buyerName), usersManager.getUserByName(sellerName));
                 transactionsMade.add(deal);
             }
             else if (amount == 0) {
@@ -94,8 +95,8 @@ public class RizpaEngine {
         String stockSymbol = getSymbol(symbol);
         Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit);
 
-        Collection<Command> buyCommands = descriptor.getBuyOffers(stockSymbol);
-        Collection<Command> sellCommands = descriptor.getSellOffers(stockSymbol);
+        Collection<Command> buyCommands = stocksManager.getBuyOffers(stockSymbol);
+        Collection<Command> sellCommands = stocksManager.getSellOffers(stockSymbol);
         Collection<Command> matchWith;
         Collection<Command> toAddTo;
 
@@ -114,7 +115,7 @@ public class RizpaEngine {
         String symbol = commandToMatch.getStockSymbol();
         if (commandToMatch.getDirection() == CommandDirection.Sell) {
             String username = commandToMatch.getUsername();
-            User seller = descriptor.getUserByName(username);
+            User seller = usersManager.getUserByName(username);
 
             int actualUserHoldingsAmount = seller.getHoldings().getStockAmount(symbol) - userAmountSellBefore(symbol, username);
 
@@ -145,7 +146,7 @@ public class RizpaEngine {
                 Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.LMT);
                 Stock stock = getStockBySymbol(symbol);
                 stock.commitDeal(dealPrice, transactionStockAmount);
-                descriptor.committedTransaction(deal);
+                stocksManager.committedTransaction(deal, usersManager.getUserByName(buyerName), usersManager.getUserByName(sellerName));
                 transactionsMade.add(deal);
             } else if (commandToMatch.getStocksAmount() == 0) {
                 break;
@@ -177,7 +178,7 @@ public class RizpaEngine {
     }
 
     private String getSymbol(String stockSymbol) {
-        return descriptor
+        return stocksManager
                 .getStocks()
                 .getStocks()
                 .stream()
@@ -187,10 +188,10 @@ public class RizpaEngine {
                 .orElse(null);
     }
 
-    public boolean isAllStocksSymbolUnique(StockExchangeDescriptor rizpaStockExchangeDescriptor) {
+    public boolean isAllStocksSymbolUnique(StocksManager rizpaStocksManager) {
         boolean isSymbolsUnique = true;
         try {
-            List<String> symbols = rizpaStockExchangeDescriptor
+            List<String> symbols = rizpaStocksManager
                     .getStocks()
                     .getStocks()
                     .stream()
@@ -204,10 +205,10 @@ public class RizpaEngine {
         return isSymbolsUnique;
     }
 
-    public boolean isAllCompaniesNamesUnique(StockExchangeDescriptor rizpaStockExchangeDescriptor) {
+    public boolean isAllCompaniesNamesUnique(StocksManager rizpaStocksManager) {
         boolean isNamesUnique = true;
         try {
-            List<String> companiesNames = rizpaStockExchangeDescriptor
+            List<String> companiesNames = rizpaStocksManager
                     .getStocks()
                     .getStocks()
                     .stream()
@@ -226,7 +227,7 @@ public class RizpaEngine {
     }
 
     public Collection<DealData> getBuyOffers(String stockSymbol) {
-        Collection<Command> buyOffers = descriptor.getBuyOffers(stockSymbol);
+        Collection<Command> buyOffers = stocksManager.getBuyOffers(stockSymbol);
         Collection<DealData> buyOffersDeals;
         if (buyOffers == null) {
             buyOffersDeals = new ArrayList<>();
@@ -240,7 +241,7 @@ public class RizpaEngine {
     }
 
     public List<DealData> getSellOffers(String stockSymbol) {
-        Collection<Command> sellOffers = descriptor.getSellOffers(stockSymbol);
+        Collection<Command> sellOffers = stocksManager.getSellOffers(stockSymbol);
         List<DealData> sellOffersDeals;
         if (sellOffers == null) {
             sellOffersDeals = new ArrayList<>();
@@ -289,30 +290,30 @@ public class RizpaEngine {
                 .reduce(0, Integer::sum);
     }
 
-    public StockExchangeDescriptor getDescriptor() {
-        return descriptor;
+    public StocksManager getStocksManager() {
+        return stocksManager;
     }
 
-    public void setDescriptor(StockExchangeDescriptor descriptor) {
-        this.descriptor = descriptor;
+    public void setStocksManager(StocksManager stocksManager) {
+        this.stocksManager = stocksManager;
     }
 
     public Collection<Command> getSellCommands(String symbol) {
-        return descriptor != null ? descriptor.getSellOffers(symbol) : new ArrayList<>();
+        return stocksManager != null ? stocksManager.getSellOffers(symbol) : new ArrayList<>();
     }
 
     public Collection<Command> getBuyCommands(String symbol) {
-        return descriptor != null ? descriptor.getBuyOffers(symbol) : new ArrayList<>();
+        return stocksManager != null ? stocksManager.getBuyOffers(symbol) : new ArrayList<>();
     }
 
     public Users getAllUsers() {
-        return descriptor.getUsers();
+        return usersManager.getUsers();
     }
 
-    public boolean isAllUsersNamesUnique(StockExchangeDescriptor descriptor) {
+    public boolean isAllUsersNamesUnique(StocksManager descriptor) {
         boolean isNamesUnique = true;
         try {
-            List<String> usersNames = descriptor
+            List<String> usersNames = usersManager
                     .getUsers()
                     .stream()
                     .map(User::getName)
@@ -325,11 +326,10 @@ public class RizpaEngine {
         return isNamesUnique;
     }
 
-    public boolean isAllUserStockExists(StockExchangeDescriptor descriptor) {
+    public boolean isAllUserStockExists(StocksManager descriptor) {
         boolean isStocksExists = true;
         HashSet<String> stocks = descriptor.getStocks().getStocks().stream().map(Stock::getSymbol).collect(Collectors.toCollection(HashSet::new));
-        Users users = descriptor.getUsers();
-        for (User user : users) {
+        for (User user : usersManager.getUsers()) {
             Holdings userHoldings = user.getHoldings();
             for (Item item : userHoldings) {
                 String stockSymbol = item.getSymbol();
