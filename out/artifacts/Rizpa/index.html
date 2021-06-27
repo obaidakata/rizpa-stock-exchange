@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rizpa Stock Exchange</title>
+    <script type="text/javascript" src="jquery/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="index/index.js"></script>
+</head>
+<body>
+<h1>Log In Page</h1>
+
+<br>
+<div class="center">
+    <form id="loginForm" action="login">
+        <label for="firstName">First name:</label>
+        <input type="text" id="firstName" name="username" value="obaida"><br>
+
+        <label>User Type:</label>
+
+        <input type="radio" id="adminRadio" name="userRole" value="Admin" checked>
+        <label for="adminRadio">Admin</label>
+
+        <input type="radio" id="traderUserRadio" name="userRole" value="Trader" checked>
+        <label for="traderUserRadio">Trader</label>
+
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="error-placeholder" class="alert-danger" role="alert"></div>
+</div>
+
+</body>
+</html>
