@@ -3,51 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Rizpa Stock Exchange</title>
-    <link rel="stylesheet" href="index/index.css">
     <script type="text/javascript" src="jquery/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $("#loginForm").submit(function (e) {
-                var parameters = $(this).serialize();
-                console.log(parameters)
-                $.ajax({
-                    data: parameters,
-                    url: this.action,
-                    timeout: 2000,
-                    method: 'post',
-                    error: function () {
-                        console.log("Error in Log in")
-                    },
-                    success: function (s) {
-                        console.log("Log in successfully" + s)
-                    }
-                })
-                return false;
-            })
-        })
-    </script>
+    <script type="text/javascript" src="index/index.js"></script>
 </head>
 <body>
-    <h1>Log In Page</h1>
+<h1>Log In Page</h1>
 
-    <br>
-    <div class="center">
-        <form id="loginForm" action="login" method="get">
-            <label for="firstName">First name:</label>
-            <input type="text" id="firstName" name="username" value="obaida"><br>
+<br>
+<div class="center">
+    <form id="loginForm" action="login">
+        <label for="firstName">First name:</label>
+        <input type="text" id="firstName" name="username" value="obaida"><br>
 
-            <label>User Type:</label>
+        <label>User Type:</label>
 
-            <input type="radio" id="adminRadio" name="userRole" value="Admin" checked>
-            <label for="adminRadio">Admin</label>
+        <input type="radio" id="adminRadio" name="userRole" value="Admin" checked>
+        <label for="adminRadio">Admin</label>
 
-            <input type="radio" id="traderUserRadio" name="userRole" value="Trader" checked>
-            <label for="traderUserRadio">Trader</label>
+        <input type="radio" id="traderUserRadio" name="userRole" value="Trader" checked>
+        <label for="traderUserRadio">Trader</label>
 
-            <br>
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="error-placeholder" class="alert-danger" role="alert"></div>
+</div>
 
 </body>
 </html>

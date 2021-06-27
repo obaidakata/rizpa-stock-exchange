@@ -1,12 +1,16 @@
 package engine.descriptor;
 
+import engine.UserRole;
+
 public class User {
     private String name;
+    private final UserRole userRole;
     private Holdings holdings;
 
-    public User(String name, Holdings holdings) {
+    public User(String name, UserRole userRole){
         this.name = name;
-        this.holdings = holdings;
+        this.userRole = userRole;
+        this.holdings = new Holdings();
     }
 
     public String getName() {
@@ -23,5 +27,18 @@ public class User {
 
     public void setHoldings(Holdings holdings) {
         this.holdings = holdings;
+    }
+
+    public boolean isTrader() {
+        return this.userRole == UserRole.Trader;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", userRole=" + userRole +
+                ", holdings=" + holdings +
+                '}';
     }
 }

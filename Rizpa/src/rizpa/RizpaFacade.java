@@ -7,6 +7,7 @@ import engine.command.Command;
 import engine.command.CommandDirection;
 import engine.descriptor.Stock;
 import engine.descriptor.StocksManager;
+import engine.descriptor.User;
 import engine.descriptor.Users;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
@@ -124,5 +125,26 @@ public class RizpaFacade {
 
     public Collection<Transaction> getTransactionsList(String symbol) {
         return rizpaEngine.getStockTransactions(symbol);
+    }
+
+    public boolean isUserExists(String username) {
+        return rizpaEngine.isUserExists(username);
+    }
+
+    public void addUser(String username, String userRole) {
+        rizpaEngine.addUser(username, userRole);
+    }
+
+    @Override
+    public String toString() {
+        return "RizpaFacade{}";
+    }
+
+    public boolean isUserTrader(String username) {
+        return rizpaEngine.isUserTrader(username);
+    }
+
+    public User getUserByName(String username) {
+        return rizpaEngine.getAllUsers().getUserByName(username);
     }
 }

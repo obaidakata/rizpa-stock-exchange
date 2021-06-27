@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Holdings extends ArrayList<Item> {
-    private List<Runnable> onChangeListeners = new ArrayList<>();
+    private final List<Runnable> onChangeListeners = new ArrayList<>();
 
     public int getStockAmount(String stockSymbol) {
         int amount = 0;

@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="rizpa">
+    <output-path>$PROJECT_DIR$/out/artifacts/rizpa</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="RizpaWeb" />
+          <element id="module-output" name="Rizpa" />
+          <element id="module-output" name="RizpaEngine" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="Rizpa" module-name="Rizpa" />
+          <element id="file-copy" path="$USER_HOME$/Downloads/gson-2.1.jar" />
+        </element>
+      </element>
+      <element id="library" level="module" name="Rizpa" module-name="Rizpa" />
+      <element id="library" level="project" name="gson-2.1" />
+      <element id="javaee-facet-resources" facet="RizpaWeb/web/Web" />
+    </root>
+  </artifact>
+</component>

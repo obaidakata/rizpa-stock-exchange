@@ -24,7 +24,6 @@ public class RizpaXmlParser{
             throw new Exception(FILE_NOT_FOUND_MESSAGE);
         }
 
-
         RizpaStockExchangeDescriptor rizpaStockExchangeDescriptor;
         try (InputStream inputStream = new FileInputStream(filePath)) {
             rizpaStockExchangeDescriptor = deserializeFrom(inputStream);

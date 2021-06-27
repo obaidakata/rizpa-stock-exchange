@@ -5,14 +5,27 @@ import engine.descriptor.Users;
 
 public class UsersManager {
 
-    private Users users;
+    private final Users users;
 
     public UsersManager() {
         this.users = new Users();
     }
 
-    public Users getUsers() {
+    public synchronized Users getUsers() {
         return users;
+    }
+
+    public boolean isUserExists(String username) {
+        boolean isExist = false;
+        for (User userToCheck : users) {
+            if(userToCheck.getName().equals(username))
+            {
+                isExist = true;
+                break;
+            }
+        }
+
+        return isExist;
     }
 
     public User getUserByName(String userName){
@@ -26,5 +39,19 @@ public class UsersManager {
         }
 
         return user;
+    }
+
+    public synchronized void addUser(User user){
+        users.add(user);
+    }
+
+    public synchronized void removeUser(User user){
+        users.remove(user);
+    }
+
+    public boolean isUserTrader(String username) {
+        User user = getUserByName(username);
+        System.out.println(user);
+        return user != null && user.isTrader();
     }
 }

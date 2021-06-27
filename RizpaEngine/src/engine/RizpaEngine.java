@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class RizpaEngine {
     private StocksManager stocksManager;
-    private UsersManager usersManager;
+    private final UsersManager usersManager = new UsersManager();
 
     public void loadNewData(StocksManager descriptor) {
         this.stocksManager = descriptor;
@@ -341,5 +341,18 @@ public class RizpaEngine {
         }
 
         return isStocksExists;
+    }
+
+    public boolean isUserExists(String username) {
+        return usersManager.isUserExists(username);
+    }
+
+    public void addUser(String username, String userRoleAsString) {
+        UserRole userRole = Enum.valueOf(UserRole.class, userRoleAsString);
+        usersManager.addUser(new User(username, userRole));
+    }
+
+    public boolean isUserTrader(String username) {
+        return usersManager.isUserTrader(username);
     }
 }

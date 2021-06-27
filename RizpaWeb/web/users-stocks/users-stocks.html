@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
-  <script src="users-stocks.js"></script>
+  <script type="text/javascript" src="../jquery/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="users-stocks.js"></script>
   <style>
     table, th, td {
       border: 1px solid black;
     }
   </style>
+
 </head>
 <body>
-<h1>Hi Obaida</h1>
+<h1 id="hiLabel">Hi</h1>
 <h4>Your balance is: 500</h4>
 
 <div>
@@ -46,8 +48,12 @@
   </table>
 </div>
 
-<input type="file"
-       id="avatar" name="avatar"
-       accept="image/png, image/jpeg">
+<div id="fileChooser">
+  <form id="uploadForm" action="../fileUpload" enctype="multipart/form-data" method="POST">
+    <input type="file" name="file1"><br>
+    <input type="Submit" value="Upload File"><br>
+  </form>
+</div>
+
 </body>
 </html>
