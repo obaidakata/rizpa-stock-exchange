@@ -35,4 +35,12 @@ public class Item {
     public void addQuantity(int quantityToAdd) {
         quantity += quantityToAdd;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "symbol='" + symbol + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

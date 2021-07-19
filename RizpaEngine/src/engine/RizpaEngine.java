@@ -13,7 +13,12 @@ public class RizpaEngine {
     private final UsersManager usersManager = new UsersManager();
 
     public void loadNewData(StocksManager descriptor) {
-        this.stocksManager = descriptor;
+        if(stocksManager == null) {
+            stocksManager = descriptor;
+        }
+        else {
+            stocksManager.addStocks(descriptor.getStocks());
+        }
     }
 
     public List<Stock> getAllStocks() {
@@ -354,5 +359,13 @@ public class RizpaEngine {
 
     public boolean isUserTrader(String username) {
         return usersManager.isUserTrader(username);
+    }
+
+    public void addHoldingToUser(String username, Holdings holdings) throws Exception {
+        usersManager.addHoldingsToUser(username, holdings);
+        User user = usersManager.getUserByName(username);
+        System.out.println("---------------------------------------------------------------------------------");
+        user.getHoldings().forEach(System.out::println);
+        System.out.println("---------------------------------------------------------------------------------");
     }
 }

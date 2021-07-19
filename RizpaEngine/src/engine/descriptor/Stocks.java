@@ -17,6 +17,16 @@ public class Stocks {
         this.stocks = stocks;
     }
 
+    public void addAll(List<Stock> stocks) {
+        this.stocks.addAll(stocks);
+    }
+
+    public void addAll(Stocks stocks) {
+        if(stocks != null) {
+            this.stocks.addAll(stocks.getStocks());
+        }
+    }
+
     @Override
     public String toString() {
         return "Stocks{" +

@@ -1,8 +1,10 @@
 package app;
 
+import app.constant.Constants;
 import rizpa.RizpaFacade;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 public class ServletUtils {
 
@@ -20,5 +22,10 @@ public class ServletUtils {
         }
 
         return (RizpaFacade) servletContext.getAttribute(RIZPA_FACADE_ATTRIBUTE_NAME);
+    }
+
+    public static String getUsernameFromSession(HttpSession session) {
+        Object usernameAsObject = session.getAttribute(Constants.USERNAME);
+        return usernameAsObject instanceof String ? (String) usernameAsObject: null;
     }
 }

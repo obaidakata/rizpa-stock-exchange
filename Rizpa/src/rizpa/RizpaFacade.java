@@ -5,12 +5,10 @@ import engine.RizpaEngine;
 import engine.Transaction;
 import engine.command.Command;
 import engine.command.CommandDirection;
-import engine.descriptor.Stock;
-import engine.descriptor.StocksManager;
-import engine.descriptor.User;
-import engine.descriptor.Users;
+import engine.descriptor.*;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,9 +39,24 @@ public class RizpaFacade {
 
     public void loadNewData(String filePath) throws Exception {
         RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parseOldData(filePath);
-        StocksManager descriptor = converter.convert(newRizpaStockExchangeDescriptor);
+        StocksManager descriptor = converter.getStockManager(newRizpaStockExchangeDescriptor);
         checkData(descriptor);
         rizpaEngine.loadNewData(descriptor);
+    }
+
+    public void loadNewData(String username, InputStream inputStream) throws Exception {
+        RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parseInputStream(inputStream);
+        StocksManager descriptor = converter.getStockManager(newRizpaStockExchangeDescriptor);
+        Holdings holdings = converter.getUserHoldings(newRizpaStockExchangeDescriptor);
+
+        checkData(descriptor);
+//        System.out.println("---------------------------------------------------------------------------------------------");
+//        System.out.println(descriptor);
+//        System.out.println(holdings);
+//        System.out.println(username);
+//        System.out.println("---------------------------------------------------------------------------------------------");
+        rizpaEngine.loadNewData(descriptor);
+        rizpaEngine.addHoldingToUser(username, holdings);
     }
 
     private void checkData(StocksManager descriptor) throws Exception {
@@ -55,8 +68,6 @@ public class RizpaFacade {
             throw new Exception(COMPANIES_NAMES_ARE_NOT_UNIQUE);
         } else if(!rizpaEngine.isAllUsersNamesUnique(descriptor)) {
             throw new Exception("Users names are not unique");
-        } else if(!rizpaEngine.isAllUserStockExists(descriptor)){
-            throw new Exception("User hold stock that doesn't exists");
         }
     }
 

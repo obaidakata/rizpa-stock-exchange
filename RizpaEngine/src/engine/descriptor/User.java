@@ -25,6 +25,16 @@ public class User {
         return holdings;
     }
 
+    public void addAll(Holdings holdingsToAdd) {
+        if(holdingsToAdd == null) {
+            return;
+        }
+
+        for (Item item : holdingsToAdd) {
+            this.holdings.addItem(item);
+        }
+    }
+
     public void setHoldings(Holdings holdings) {
         this.holdings = holdings;
     }

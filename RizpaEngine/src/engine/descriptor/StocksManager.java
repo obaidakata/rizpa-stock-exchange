@@ -69,8 +69,12 @@ public class StocksManager implements Serializable {
 
     @Override
     public String toString() {
-        return "StockExchangeDescriptor{" +
+        return "StocksManager{" +
                 "stocks=" + stocks +
+                ", stockSymbol2BuyOffers=" + stockSymbol2BuyOffers +
+                ", stockSymbol2SellOffers=" + stockSymbol2SellOffers +
+                ", stockSymbol2transactions=" + stockSymbol2transactions +
+                ", SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE='" + SYMBOL_NOT_FOUND_EXCEPTION_MESSAGE + '\'' +
                 '}';
     }
 
@@ -90,4 +94,9 @@ public class StocksManager implements Serializable {
     }
 
 
+    public void addStocks(Stocks stocksToAdd) {
+        if(stocks != null) {
+            stocks.addAll(stocksToAdd);
+        }
+    }
 }

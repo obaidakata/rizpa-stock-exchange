@@ -1,3 +1,5 @@
+var refreshRate = 2000; //milli seconds
+
 function getUser() {
     var fileChooser = $("#fileChooser")
     fileChooser.hide()
@@ -49,9 +51,45 @@ function uploadFile() {
     })
 }
 
+function refreshUsersList(users) {
+    //clear all current users
+    const usersList = $("#usersList");
+    usersList.empty();
+    $('<tr>' +
+        '<th> User Role </th>' +
+        '<th> Username </th>' +
+        '</tr>')
+        .appendTo(usersList);
+
+    // rebuild the list of users: scan all users and add them to the list of users
+    $.each(users || [], function(index, user) {
+        console.log("Adding user #" + index + ": " + user);
+
+        //create a new <li> tag with a value in it and append it to the #userslist (div with id=userslist) element
+        $('<tr>' +
+            '<th>' + user.userRole + '</th>' +
+            '<th>' + user.name + '</th>' +
+        '</tr>')
+            .appendTo(usersList);
+    });
+}
+
+function ajaxUsersList() {
+    $.ajax({
+        url: "http://localhost:8080/rizpa/users",
+        success: function(users) {
+            refreshUsersList(users);
+        }
+    });
+}
+
+
 function onPageLoaded() {
     getUser();
     uploadFile();
+    setInterval(ajaxUsersList, refreshRate);
 }
+
+
 
 $(onPageLoaded)

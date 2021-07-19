@@ -32,7 +32,11 @@ public class RizpaXmlParser{
         return rizpaStockExchangeDescriptor;
     }
 
-    private RizpaStockExchangeDescriptor deserializeFrom(InputStream in) throws JAXBException {
+    public RizpaStockExchangeDescriptor parseInputStream(InputStream inputStream) throws JAXBException {
+        return deserializeFrom(inputStream);
+    }
+
+    private  RizpaStockExchangeDescriptor deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_XML_PACKAGE_NAME);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         return (RizpaStockExchangeDescriptor) unmarshaller.unmarshal(in);

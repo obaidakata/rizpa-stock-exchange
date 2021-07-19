@@ -1,5 +1,6 @@
 package engine;
 
+import engine.descriptor.Holdings;
 import engine.descriptor.User;
 import engine.descriptor.Users;
 
@@ -53,5 +54,15 @@ public class UsersManager {
         User user = getUserByName(username);
         System.out.println(user);
         return user != null && user.isTrader();
+    }
+
+    public void addHoldingsToUser(String username, Holdings holdings) throws Exception {
+        User user = getUserByName(username);
+        if(user != null) {
+            user.addAll(holdings);
+        }
+        else {
+            throw new Exception("User Not Found");
+        }
     }
 }

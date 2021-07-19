@@ -74,4 +74,6 @@ public class Holdings extends ArrayList<Item> {
     public void addOnChangeListener(Runnable runnable) {
         onChangeListeners.add(runnable);
     }
+
+
 }
