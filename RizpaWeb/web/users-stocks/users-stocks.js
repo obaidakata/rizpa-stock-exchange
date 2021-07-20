@@ -1,9 +1,21 @@
-var refreshRate = 2000; //milli seconds
+var refreshRate = 1000; //milli seconds
+
+function getUserBalance() {
+    $.ajax({
+        url: "http://localhost:8080/rizpa/userBalance",
+        success: function(userBalance) {
+            const userBalanceDev = $("#userBalance");
+            userBalanceDev.empty();
+            $('<h4> Your balance is: ' + userBalance + ' </h4>')
+                .appendTo(userBalanceDev);
+        }
+    });
+}
+
 
 function getUser() {
     var fileChooser = $("#fileChooser")
     fileChooser.hide()
-    console.log("checkIfUserIsTrader");
     $.ajax({
         url: "http://localhost:8080/rizpa/user",
         timeout: 2000,
@@ -15,6 +27,7 @@ function getUser() {
             $("#hiLabel").text("Hi " + user.name)
             if(user.userRole === "Trader") {
                 fileChooser.show()
+                setInterval(getUserBalance, refreshRate);
             }
         }
     })
@@ -53,24 +66,21 @@ function uploadFile() {
 
 function refreshUsersList(users) {
     //clear all current users
-    const usersList = $("#usersList");
-    usersList.empty();
+    const usersTable = $("#usersTable");
+    usersTable.empty();
     $('<tr>' +
         '<th> User Role </th>' +
         '<th> Username </th>' +
         '</tr>')
-        .appendTo(usersList);
+        .appendTo(usersTable);
 
     // rebuild the list of users: scan all users and add them to the list of users
     $.each(users || [], function(index, user) {
-        console.log("Adding user #" + index + ": " + user);
-
-        //create a new <li> tag with a value in it and append it to the #userslist (div with id=userslist) element
         $('<tr>' +
             '<th>' + user.userRole + '</th>' +
             '<th>' + user.name + '</th>' +
         '</tr>')
-            .appendTo(usersList);
+            .appendTo(usersTable);
     });
 }
 
@@ -82,14 +92,57 @@ function ajaxUsersList() {
         }
     });
 }
+var selectedIndex = 0;
+function refreshHoldingsList(stocks) {
+    const stocksTable = $("#stocksTable");
+    stocksTable.empty();
+    $('<tr>' +
+        '<td> Company name </td>' +
+        '<td> Symbol </td>' +
+        '<td> Current price </td>' +
+        '<td> Sum Price </td>' +
+        '</tr>')
+        .appendTo(stocksTable);
+
+    $.each(stocks || [], function(index, stock) {
+        const rowStart = (index === selectedIndex) ? '<tr class="selected">' : '<tr>'
+        const row = $(rowStart +
+            '<td>' + stock.companyName + '</td>' +
+            '<td>' + stock.symbol + '</td>' +
+            '<td>' + stock.price + '</td>' +
+            '<td>' + stock.sumOfAllTransactions + '</td>' +
+            '</tr>');
+        row.click(function(){
+            selectedIndex = index;
+            console.log("clicked " + selectedIndex);
+            // $(this).addClass('selected').siblings().removeClass('selected');
+        });
+        row.appendTo(stocksTable);
+    });
+}
+
+
+function getSystemHoldings() {
+    $.ajax({
+        url: "http://localhost:8080/rizpa/stocks",
+        success: function(stocks) {
+            refreshHoldingsList(stocks);
+        }
+    });
+}
 
 
 function onPageLoaded() {
     getUser();
     uploadFile();
     setInterval(ajaxUsersList, refreshRate);
+    setInterval(getSystemHoldings, refreshRate);
+
+    // $('.ok').on('click', function(e){
+    //     console.log("OK Click");
+    //     alert($("#table tr.selected td:first").html());
+    // });
 }
 
 
-
-$(onPageLoaded)
+$(onPageLoaded);

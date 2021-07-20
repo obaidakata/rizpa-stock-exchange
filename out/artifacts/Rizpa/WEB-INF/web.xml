@@ -18,6 +18,11 @@
         <servlet-class>app.FileUploadServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>UsersServlet</servlet-name>
+        <servlet-class>app.UsersServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -31,5 +36,10 @@
     <servlet-mapping>
         <servlet-name>FileUploadServlet</servlet-name>
         <url-pattern>/fileUpload</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>UsersServlet</servlet-name>
+        <url-pattern>/users</url-pattern>
     </servlet-mapping>
 </web-app>

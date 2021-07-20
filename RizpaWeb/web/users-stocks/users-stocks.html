@@ -5,6 +5,7 @@
   <title>Title</title>
   <script type="text/javascript" src="../jquery/jquery-2.0.3.min.js"></script>
   <script type="text/javascript" src="users-stocks.js"></script>
+  <link rel="stylesheet" href="users-stocks.css">
   <style>
     table, th, td {
       border: 1px solid black;
@@ -14,38 +15,25 @@
 </head>
 <body>
 <h1 id="hiLabel">Hi</h1>
-<h4>Your balance is: 500</h4>
+<div id="userBalance"></div>
+<!--  <h4>500</h4>-->
+
 
 <div>
   <h1>Stocks in the system</h1>
-  <table style="width:50%">
-    <tr>
-      <th>Company name</th>
-      <th>Symbol</th>
-      <th>Current price</th>
-      <th>Sum Price</th>
-    </tr>
-  </table>
+  <table style="width:50%" id="stocksTable"></table>
+  <input type="button" name="OK" class="ok" value="OK"/>
 </div>
 
 <br>
 <br>
 
 <div>
-<!--  <table style="width:50%" id="userslist">-->
-<!--    <tr>-->
-<!--      <th>Role</th>-->
-<!--      <th>Username</th>-->
-<!--    </tr>-->
-<!--    <tr>-->
-<!--      <th>ADMIN</th>-->
-<!--      <th>Administrator</th>-->
-<!--    </tr>-->
-<!---->
-<!--  </table>-->
+  <table style="width:50%" id="usersTable">
+  </table>
 
-  <ul id="usersList">
-  </ul>
+<!--  <ul id="usersList">-->
+<!--  </ul>-->
 
 </div>
 
