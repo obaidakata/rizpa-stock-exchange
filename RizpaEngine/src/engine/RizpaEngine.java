@@ -424,4 +424,13 @@ public class RizpaEngine {
         buyerTransactionRecords.add(new TransactionRecord(chargeValue, userBalance,  TransactionType.Charge));
         return userBalance;
     }
+
+    public boolean isStockExists(String symbol) {
+        return stocksManager
+                .getStocks()
+                .getStocks()
+                .stream()
+                .map(Stock::getSymbol)
+                .anyMatch(stockSymbol -> stockSymbol.equalsIgnoreCase(symbol));
+    }
 }

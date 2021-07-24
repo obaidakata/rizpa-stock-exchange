@@ -230,4 +230,16 @@ function chargeAccount() {
 
 function goToStock() {
     logMessage("Going to " + selectedStockSymbol);
+    $.ajax({
+        url: "http://localhost:8080/rizpa/StockRedirect?stockSymbol=" + selectedStockSymbol,
+        timeout: 2000,
+        method: 'get',
+        error: function (errorObject) {
+            logMessage("Failed redirect to stock details (" + selectedStockSymbol + " )");
+        },
+        success: function (nextPageUrl) {
+            logMessage(nextPageUrl);
+            window.location.replace(nextPageUrl);
+        }
+    });
 }

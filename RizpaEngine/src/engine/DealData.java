@@ -5,17 +5,19 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class DealData implements Comparable<DealData>, Serializable {
-    private String symbol;
+    private final String symbol;
     private Integer price;
     private int amount;
-    private TimeStamp timeStamp;
+    private final TimeStamp timeStampValue;
+    private final String timeStamp;
 
 
     public DealData(String symbol, int  price, int amount, Date timeStamp) {
         this.symbol = symbol;
         this.price = price;
         this.amount = amount;
-        this.timeStamp = new TimeStamp(timeStamp);
+        this.timeStampValue = new TimeStamp(timeStamp);
+        this.timeStamp = this.timeStampValue.toString();
     }
 
     public int getDealPrice() {
@@ -35,18 +37,16 @@ public class DealData implements Comparable<DealData>, Serializable {
     }
 
     public Date getTimeStamp() {
-        return timeStamp.getValue();
+        return timeStampValue.getValue();
     }
 
     public String getTimeStampValue() {
-        return timeStamp.toString();
+        return timeStampValue.toString();
     }
 
     public void setPrice(int price) {
         this.price = price;
     }
-
-
 
     public void commit(int amount) {
         if (this.amount >= amount) {
@@ -56,6 +56,6 @@ public class DealData implements Comparable<DealData>, Serializable {
 
     @Override
     public int compareTo(DealData o) {
-        return o.getTimeStamp().compareTo(timeStamp.getValue());
+        return o.getTimeStamp().compareTo(timeStampValue.getValue());
     }
 }

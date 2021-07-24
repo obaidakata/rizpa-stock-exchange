@@ -51,11 +51,6 @@ public class RizpaFacade {
         Holdings holdings = converter.getUserHoldings(newRizpaStockExchangeDescriptor);
 
         checkData(descriptor);
-//        System.out.println("---------------------------------------------------------------------------------------------");
-//        System.out.println(descriptor);
-//        System.out.println(holdings);
-//        System.out.println(username);
-//        System.out.println("---------------------------------------------------------------------------------------------");
         rizpaEngine.loadNewData(descriptor);
         rizpaEngine.addHoldingToUser(username, holdings);
     }
@@ -166,5 +161,9 @@ public class RizpaFacade {
 
     public int chargeUserAccount(String username, int chargeValue) {
         return rizpaEngine.chargeUserAccount(username, chargeValue);
+    }
+
+    public boolean isStockExists(String symbol) {
+        return rizpaEngine.isStockExists(symbol);
     }
 }

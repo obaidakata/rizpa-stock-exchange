@@ -2,9 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Stock</title>
+    <script type="text/javascript" src="../jquery/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="stockDetails.js"></script>
+    <link rel="stylesheet" href="stockDetails.css">
 </head>
 <body>
 
+<div id="systemMessages">
+    <button type="button" id="backButton" onclick="goBack()">Back</button>
+    <h1>System Messages</h1>
+    <ol id="messageList">
+    </ol>
+</div>
+
+<div id="content">
+
+    <div id="contentSplitter">
+
+        <h1 id="stockLabel"></h1>
+        <h3 id="userHoldingAmount"></h3>
+            <br>
+            <br>
+        <h1>Stock Details</h1>
+        <table style="width:50%" id="stockDetailsTable"></table>
+            <br>
+            <br>
+        <table style="width:50%" id="stockTransactionsTable"></table>
+
+        <br>
+        <br>
+        <div class="box">
+            <h3>Command Form</h3>
+            <form id="commandForm">
+                <label for="directionInput">Type</label>
+                <select id="directionInput" name="direction" onchange="directionChange(this);">
+                    <option value="Buy">Buy</option>
+                    <option value="Sell">Sell</option>
+                </select>
+                <br>
+                <br>
+
+                <label for="commandTypeInput">Command Type</label>
+                <select id="commandTypeInput" name="commandType" onchange="commandTypeChange(this);">
+                    <option value="LMT">LMT</option>
+                    <option value="MKT">MKT</option>
+                    <option value="FOK">FOK</option>
+                    <option value="IOC">IOC</option>
+                </select>
+                <br>
+                <br>
+                <label for="priceInput">Price</label>
+                <input type="number" id="priceInput" name="price" min="0" onchange="checkPriceLimit();">
+                <br>
+                <br>
+                <label for="amountInput">Amount</label>
+                <input type="number" id="amountInput" name="amount" min="0" max="" onchange="checkAmountLimit();">
+                <br>
+                <br>
+                <div class="buttonHolder">
+                    <input id="submitInput" type="submit" value="Submit">
+                </div>
+
+            </form>
+        </div>
+
+        <br>
+
+    </div>
 </body>
 </html>
