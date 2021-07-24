@@ -1,5 +1,8 @@
-var refreshRate = 1000; //milli seconds
-
+const refreshRate = 1000; //milli seconds
+let selectedIndex = 0;
+let selectedStockSymbol = '';
+let userBalance = 0;
+let username = "";
 function getUserBalance() {
     $.ajax({
         url: "http://localhost:8080/rizpa/userBalance",
@@ -24,13 +27,25 @@ function getUser() {
             console.log(errorObject.responseText);
         },
         success: function (user) {
-            $("#hiLabel").text("Hi " + user.name)
+            let hiMessage = "Hi " + user.name + ", Role : " ;
             if(user.userRole === "Trader") {
                 fileChooser.show()
                 setInterval(getUserBalance, refreshRate);
+                setInterval(getTransactionsRecord, refreshRate);
+                username = user.name;
+                hiMessage = hiMessage + "Trader";
             }
+            else {
+                hiMessage = hiMessage + "Admin";
+            }
+
+            $("#hiLabel").text(hiMessage)
         }
     })
+}
+
+function logMessage(message) {
+    $("#messageList").append('<li>' + message + '</li>');
 }
 
 function uploadFile() {
@@ -50,11 +65,11 @@ function uploadFile() {
                 contentType: false, // Set content type to false as jQuery will tell the server its a query string request
                 timeout: 4000,
                 error: function(e) {
-                    console.error("Failed to submit");
-                    $("#result").text("Failed to get result from server " + e);
+                    logMessage("Failed to upload file");
+                    logMessage("Failed to get result from server " + e);
                 },
                 success: function(r) {
-                    $("#result").text(r);
+                    logMessage("File loaded successfully");
                 }
             });
 
@@ -92,7 +107,8 @@ function ajaxUsersList() {
         }
     });
 }
-var selectedIndex = 0;
+
+
 function refreshHoldingsList(stocks) {
     const stocksTable = $("#stocksTable");
     stocksTable.empty();
@@ -104,22 +120,30 @@ function refreshHoldingsList(stocks) {
         '</tr>')
         .appendTo(stocksTable);
 
+
     $.each(stocks || [], function(index, stock) {
-        const rowStart = (index === selectedIndex) ? '<tr class="selected">' : '<tr>'
-        const row = $(rowStart +
+        let rowStart = (index === selectedIndex) ? '<tr class="selected">' : '<tr>';
+
+        const rowString =  rowStart +
             '<td>' + stock.companyName + '</td>' +
             '<td>' + stock.symbol + '</td>' +
             '<td>' + stock.price + '</td>' +
             '<td>' + stock.sumOfAllTransactions + '</td>' +
-            '</tr>');
-        row.click(function(){
+            '</tr>';
+
+        $(rowString).click(function () {
+            $('.selected').removeClass('selected');
+            $(this).addClass("selected");
             selectedIndex = index;
-            console.log("clicked " + selectedIndex);
-            // $(this).addClass('selected').siblings().removeClass('selected');
-        });
-        row.appendTo(stocksTable);
+        }).appendTo(stocksTable);
+
+        if(index === selectedIndex) {
+            selectedStockSymbol = stock.symbol;
+            $("#ok").text("Go to " + stock.companyName)
+        }
     });
 }
+
 
 
 function getSystemHoldings() {
@@ -131,18 +155,79 @@ function getSystemHoldings() {
     });
 }
 
+function refreshTransactionsRecordList(transactionsRecord) {
+    const transactionsRecordTable = $("#transactionsRecordTable");
+    transactionsRecordTable.empty();
+    $('<tr>' +
+        '<td> Number </td>' +
+        '<td> Type </td>' +
+        '<td> Symbol </td>' +
+        '<td> Time stamp </td>' +
+        '<td> Price </td>' +
+        '<td> Balance Before </td>' +
+        '<td> Balance After </td>' +
+        '</tr>')
+        .appendTo(transactionsRecordTable);
+
+    $.each(transactionsRecord || [], function(index, transactionRecord) {
+        index = index + 1;
+        $('<tr>' +
+            '<td>' + index  + '</td>' +
+            '<td>' + transactionRecord.transactionType + '</td>' +
+            '<td>' + transactionRecord.symbol + '</td>' +
+            '<td>' + transactionRecord.timeStamp + '</td>' +
+            '<td>' + transactionRecord.price + '</td>' +
+            '<td>' + transactionRecord.balanceBefore + '</td>' +
+            '<td>' + transactionRecord.balanceAfter  + '</td>' +
+            '</tr>').appendTo(transactionsRecordTable);
+    });
+}
+
+function getTransactionsRecord() {
+    $.ajax({
+        url: "http://localhost:8080/rizpa/user/transactionsRecord",
+        success: function(transactionsRecord) {
+            refreshTransactionsRecordList(transactionsRecord);
+        }
+    });
+}
 
 function onPageLoaded() {
     getUser();
     uploadFile();
     setInterval(ajaxUsersList, refreshRate);
     setInterval(getSystemHoldings, refreshRate);
+    $("#ok").click(function () {
 
-    // $('.ok').on('click', function(e){
-    //     console.log("OK Click");
-    //     alert($("#table tr.selected td:first").html());
-    // });
+    });
 }
 
-
 $(onPageLoaded);
+
+function chargeAccount() {
+    const value = $("#chargeValue").val();
+    if(isNaN(value)) {
+        logMessage("Charging value should be a number");
+    }
+    else if(value <= 0) {
+        logMessage("Charging value should be >= 0");
+    }
+    else {
+        $.ajax({
+            data: value,
+            url: "http://localhost:8080/rizpa/user/chargeAccount?chargeValue=" + value,
+            timeout: 2000,
+            method: 'post',
+            error: function (errorObject) {
+                logMessage("Failed charging the account");
+            },
+            success: function (newBalance) {
+                logMessage("Account charging was successful, new balance = " + newBalance);
+            }
+        });
+    }
+}
+
+function goToStock() {
+    logMessage("Going to " + selectedStockSymbol);
+}

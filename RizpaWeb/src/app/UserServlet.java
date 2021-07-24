@@ -23,7 +23,6 @@ public class UserServlet extends HttpServlet {
         else {
             RizpaFacade rizpaFacade = ServletUtils.getRizpaFacade(getServletContext());
             User user = rizpaFacade.getUserByName(usernameFromSession);
-            System.out.println(user);
             response.setStatus(200);
             response.getOutputStream().println(new Gson().toJson(user));
         }

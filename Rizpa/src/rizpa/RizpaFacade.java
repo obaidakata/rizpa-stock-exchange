@@ -3,6 +3,7 @@ package rizpa;
 import engine.DealData;
 import engine.RizpaEngine;
 import engine.Transaction;
+import engine.TransactionRecord;
 import engine.command.Command;
 import engine.command.CommandDirection;
 import engine.descriptor.*;
@@ -157,5 +158,13 @@ public class RizpaFacade {
 
     public User getUserByName(String username) {
         return rizpaEngine.getAllUsers().getUserByName(username);
+    }
+
+    public Collection<TransactionRecord> getUserTransactionsRecord(String username) {
+        return rizpaEngine.getUserTransactionsRecord(username);
+    }
+
+    public int chargeUserAccount(String username, int chargeValue) {
+        return rizpaEngine.chargeUserAccount(username, chargeValue);
     }
 }

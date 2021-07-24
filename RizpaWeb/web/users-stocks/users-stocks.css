@@ -1,6 +1,35 @@
-td {border: 1px #DDD solid; padding: 5px; cursor: pointer;}
+td {border: 1px #DDD solid; padding: 2px; cursor: pointer;}
 
 .selected {
     background-color: blue;
     color: #FFF;
+}
+
+#contentSplitter {
+    width: 1000px;
+}
+
+#systemMessages {
+    width: 400px;
+    float: left;
+}
+
+#transactionsRecord {
+    width: 400px;
+    float: right;
+    margin-right: 90px;
+}
+
+#content  {
+    margin-left: 410px;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+.box {
+    border: 1px solid black;
+    width: 400px;
+    padding: 5px;
 }

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Holdings extends ArrayList<Item> {
-    private final List<Runnable> onChangeListeners = new ArrayList<>();
-
     public int getStockAmount(String stockSymbol) {
         int amount = 0;
         for (Item item : this) {
@@ -22,9 +20,6 @@ public class Holdings extends ArrayList<Item> {
     }
 
     private void invokeAllOnChangeListeners() {
-        for (Runnable onChangeListener : onChangeListeners) {
-            onChangeListener.run();
-        }
     }
 
     public void addItem(Item item) {
@@ -45,8 +40,6 @@ public class Holdings extends ArrayList<Item> {
         {
             super.add(item);
         }
-
-        invokeAllOnChangeListeners();
     }
 
     public void removeItem(Item item) {
@@ -66,14 +59,6 @@ public class Holdings extends ArrayList<Item> {
             {
                 super.remove(existsItem);
             }
-
-            invokeAllOnChangeListeners();
         }
     }
-
-    public void addOnChangeListener(Runnable runnable) {
-        onChangeListeners.add(runnable);
-    }
-
-
 }

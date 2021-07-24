@@ -6,6 +6,7 @@ public class User {
     private String name;
     private final UserRole userRole;
     private Holdings holdings;
+    private int balance = 0;
 
     public User(String name, UserRole userRole){
         this.name = name;
@@ -35,6 +36,10 @@ public class User {
         }
     }
 
+    public int getBalance() {
+        return balance;
+    }
+
     public void setHoldings(Holdings holdings) {
         this.holdings = holdings;
     }
@@ -50,5 +55,9 @@ public class User {
                 ", userRole=" + userRole +
                 ", holdings=" + holdings +
                 '}';
+    }
+
+    public void chargeBalance(int price) {
+        balance += price;
     }
 }

@@ -52,6 +52,9 @@ public class StocksManager implements Serializable {
             Item item = new Item(symbol, transactionToCommit.getDealData().getAmount());
             buyer.getHoldings().addItem(item);
             seller.getHoldings().removeItem(item);
+            int price = transactionToCommit.getDealData().getPrice();
+            buyer.chargeBalance(-price);
+            seller.chargeBalance(price);
 
             stockTransactions.add(transactionToCommit);
         } else {

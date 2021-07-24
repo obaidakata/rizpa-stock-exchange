@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class RizpaEngine {
     private StocksManager stocksManager;
     private final UsersManager usersManager = new UsersManager();
+    private final HashMap<String, TreeSet<TransactionRecord>> userToTransactionRecords = new HashMap<>();
 
     public void loadNewData(StocksManager descriptor) {
         if(stocksManager == null) {
@@ -19,6 +20,21 @@ public class RizpaEngine {
         else {
             stocksManager.addStocks(descriptor.getStocks());
         }
+    }
+
+    public Collection<TransactionRecord> getUserTransactionsRecord(String username) {
+        return getUserTransactionsRecordAsTreeSet(username);
+    }
+
+    private TreeSet<TransactionRecord> getUserTransactionsRecordAsTreeSet(String username) {
+        return userToTransactionRecords.computeIfAbsent(username, v -> new TreeSet<>());
+    }
+
+    public void chargeUserBalance(String username, int price) {
+        TreeSet<TransactionRecord> userTransactionRecords = getUserTransactionsRecordAsTreeSet(username);
+        User user = getAllUsers().getUserByName(username);
+        user.chargeBalance(price);
+        userTransactionRecords.add(new TransactionRecord(price, user.getBalance(), TransactionType.Charge));
     }
 
     public List<Stock> getAllStocks() {
@@ -50,7 +66,6 @@ public class RizpaEngine {
         return transactions;
     }
 
-
     public List<Transaction> doMKTCommand(String username, CommandDirection direction, String symbol, int amount){
         String stockSymbol = getSymbol(symbol);
         Stock stock = getStockBySymbol(stockSymbol);
@@ -79,7 +94,10 @@ public class RizpaEngine {
                 String sellerName = direction == CommandDirection.Sell ? username : command.getUsername();
                 Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.MKT);
                 stock.commitDeal(dealPrice, transactionStockAmount);
-                stocksManager.committedTransaction(deal, usersManager.getUserByName(buyerName), usersManager.getUserByName(sellerName));
+                User buyer = usersManager.getUserByName(buyerName);
+                User seller = usersManager.getUserByName(sellerName);
+                stocksManager.committedTransaction(deal, buyer, seller);
+                recordTransaction(dealPrice, buyer, seller, symbol);
                 transactionsMade.add(deal);
             }
             else if (amount == 0) {
@@ -151,7 +169,10 @@ public class RizpaEngine {
                 Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.LMT);
                 Stock stock = getStockBySymbol(symbol);
                 stock.commitDeal(dealPrice, transactionStockAmount);
-                stocksManager.committedTransaction(deal, usersManager.getUserByName(buyerName), usersManager.getUserByName(sellerName));
+                User buyer = usersManager.getUserByName(buyerName);
+                User seller = usersManager.getUserByName(sellerName);
+                stocksManager.committedTransaction(deal, buyer, seller);
+                recordTransaction(dealPrice, buyer, seller, symbol);
                 transactionsMade.add(deal);
             } else if (commandToMatch.getStocksAmount() == 0) {
                 break;
@@ -163,6 +184,13 @@ public class RizpaEngine {
         }
 
         return transactionsMade;
+    }
+
+    private void recordTransaction(int price, User buyer, User seller, String stockSymbol) {
+        TreeSet<TransactionRecord> buyerTransactionRecords = userToTransactionRecords.computeIfAbsent(buyer.getName(), v -> new TreeSet<>());
+        TreeSet<TransactionRecord> sellerTransactionRecords = userToTransactionRecords.computeIfAbsent(seller.getName(), v -> new TreeSet<>());
+        buyerTransactionRecords.add(new TransactionRecord(-price, buyer.getBalance(), TransactionType.StockBuy, stockSymbol));
+        sellerTransactionRecords.add(new TransactionRecord(price, seller.getBalance(), TransactionType.StockSell, stockSymbol));
     }
 
     private int userAmountSellBefore(String symbol, String username) {
@@ -363,9 +391,37 @@ public class RizpaEngine {
 
     public void addHoldingToUser(String username, Holdings holdings) throws Exception {
         usersManager.addHoldingsToUser(username, holdings);
+        String buyer = "obaida";
+        String seller = "obaida";
+        User user = getAllUsers().getUserByName(username);
+        user.chargeBalance(1000);
+        try {
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 20, 100);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 10, 110);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 10, 90);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 10, 90);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 25, 120);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 30, 90);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 20, 80);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 20, 100);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 10, 100);
+            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 5, 90);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 5, 90);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 25, 95);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 20, 90);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 12, 90);
+            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 13, 85);
+        }
+        catch (Exception ignored) {}
+    }
+
+
+    public int chargeUserAccount(String username, int chargeValue) {
         User user = usersManager.getUserByName(username);
-        System.out.println("---------------------------------------------------------------------------------");
-        user.getHoldings().forEach(System.out::println);
-        System.out.println("---------------------------------------------------------------------------------");
+        user.chargeBalance(chargeValue);
+        int userBalance = user.getBalance();
+        TreeSet<TransactionRecord> buyerTransactionRecords = userToTransactionRecords.computeIfAbsent(username, v -> new TreeSet<>());
+        buyerTransactionRecords.add(new TransactionRecord(chargeValue, userBalance,  TransactionType.Charge));
+        return userBalance;
     }
 }

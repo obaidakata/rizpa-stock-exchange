@@ -6,43 +6,53 @@
   <script type="text/javascript" src="../jquery/jquery-2.0.3.min.js"></script>
   <script type="text/javascript" src="users-stocks.js"></script>
   <link rel="stylesheet" href="users-stocks.css">
-  <style>
-    table, th, td {
-      border: 1px solid black;
-    }
-  </style>
-
 </head>
 <body>
-<h1 id="hiLabel">Hi</h1>
-<div id="userBalance"></div>
-<!--  <h4>500</h4>-->
 
+  <div id="systemMessages">
+      <h1>System Messages</h1>
+      <ol id="messageList">
+      </ol>
+  </div>
 
-<div>
-  <h1>Stocks in the system</h1>
-  <table style="width:50%" id="stocksTable"></table>
-  <input type="button" name="OK" class="ok" value="OK"/>
-</div>
+  <div id="content">
 
-<br>
-<br>
+      <div id="contentSplitter">
 
-<div>
-  <table style="width:50%" id="usersTable">
-  </table>
+              <div id="transactionsRecord">
+                <h1> Transactions Record</h1>
+                <table style="width:50%" id="transactionsRecordTable">
+                </table>
+              </div>
 
-<!--  <ul id="usersList">-->
-<!--  </ul>-->
+              <h1 id="hiLabel">Hi</h1>
+              <div id="userBalance"></div>
+              <br>
+              <div id="fileChooser" class="box">
+                <h3>Upload XML file to add stocks to the system</h3>
+                <form id="uploadForm" action="../fileUpload" enctype="multipart/form-data" method="POST">
+                  <input type="file" name="file1" ><br>
+                  <input type="Submit" value="Click to upload file"><br>
+                </form>
+              </div>
+              <br>
+              <div class="box">
+                <h3>Charge your account here.</h3>
+                <input type="text" id="chargeValue">
+                <button type="button" id="myBtn" onclick="chargeAccount()">Charge account</button>
+                <h4>please type a non negative value</h4>
+              </div>
+              <br>
+              <h1>Stocks in the system</h1>
+              <h4>  please select stock and press Go to get more details.</h4>
+              <table style="width:50%" id="stocksTable"></table>
+              <button type="button" id="ok" onclick="goToStock()">Go</button>
+              <br>
+              <h1>Users in the system</h1>
+              <table style="width:50%" id="usersTable">
+              </table>
 
-</div>
-
-<div id="fileChooser">
-  <form id="uploadForm" action="../fileUpload" enctype="multipart/form-data" method="POST">
-    <input type="file" name="file1"><br>
-    <input type="Submit" value="Upload File"><br>
-  </form>
-</div>
-
+        </div>
+  </div>
 </body>
 </html>
