@@ -1,7 +1,7 @@
 td {border: 1px #DDD solid; padding: 2px; cursor: pointer;}
 
 .selected {
-    background-color: blue;
+    background-color: skyblue;
     color: #FFF;
 }
 
@@ -9,7 +9,7 @@ td {border: 1px #DDD solid; padding: 2px; cursor: pointer;}
     width: 1000px;
 }
 
-#systemMessages {
+#leftSide {
     width: 400px;
     float: left;
 }

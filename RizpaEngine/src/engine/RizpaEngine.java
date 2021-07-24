@@ -134,6 +134,75 @@ public class RizpaEngine {
         return matchCommand(newCommand, matchWith, toAddTo);
     }
 
+    public List<Transaction> doFOKCommand(String username, CommandDirection direction, String symbol, int amount, int limit) throws Exception {
+        String stockSymbol = getSymbol(symbol);
+        Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit);
+
+        Collection<Command> buyCommands = stocksManager.getBuyOffers(stockSymbol);
+        Collection<Command> sellCommands = stocksManager.getSellOffers(stockSymbol);
+        Collection<Command> matchWith;
+        Collection<Command> toAddTo;
+
+        if (direction == CommandDirection.Buy) {
+            matchWith = sellCommands;
+            toAddTo = buyCommands;
+        } else {
+            matchWith = buyCommands;
+            toAddTo = sellCommands;
+        }
+
+        if(canMatchAllTheCommands(newCommand, matchWith, toAddTo)) {
+            return matchCommand(newCommand, matchWith, toAddTo);
+        }
+        else {
+            throw new Exception("Can commit all the command, so no transaction made.");
+        }
+    }
+
+    public List<Transaction> doIOCCommand(String username, CommandDirection direction, String symbol, int amount, int limit) throws Exception {
+        String stockSymbol = getSymbol(symbol);
+        Command newCommand = new Command(username, stockSymbol, direction, CommandType.LMT, amount, limit);
+
+        Collection<Command> buyCommands = stocksManager.getBuyOffers(stockSymbol);
+        Collection<Command> sellCommands = stocksManager.getSellOffers(stockSymbol);
+        Collection<Command> matchWith = (direction == CommandDirection.Buy) ? sellCommands : buyCommands;
+
+        return matchCommandLeaveTheRest(newCommand, matchWith);
+    }
+
+
+    private List<Transaction> matchCommandLeaveTheRest(Command commandToMatch, Collection<Command> commands) throws Exception {
+        checkIfUserCanCommitPurchase(commandToMatch);
+
+        List<Transaction> transactionsMade = new ArrayList<>();
+        for (Command command : commands) {
+            if (commandToMatch.canCommitPurchaseBasedOnPrice(command)) {
+                int transactionStockAmount = Math.min(command.getStocksAmount(), commandToMatch.getStocksAmount());
+                command.commit(transactionStockAmount);
+                commandToMatch.commit(transactionStockAmount);
+                int dealPrice = command.getOfferPrice();
+                String symbol = commandToMatch.getStockSymbol();
+                String buyerName = commandToMatch.getDirection() == CommandDirection.Buy ? commandToMatch.getUsername() : command.getUsername();
+                String sellerName = commandToMatch.getDirection() == CommandDirection.Sell ? commandToMatch.getUsername() : command.getUsername();
+                Transaction deal = new Transaction(symbol, dealPrice, transactionStockAmount, new Date(), buyerName, sellerName, CommandType.LMT);
+                Stock stock = getStockBySymbol(symbol);
+                stock.commitDeal(dealPrice, transactionStockAmount);
+                User buyer = usersManager.getUserByName(buyerName);
+                User seller = usersManager.getUserByName(sellerName);
+                stocksManager.committedTransaction(deal, buyer, seller);
+                recordTransaction(dealPrice, buyer, seller, symbol);
+                transactionsMade.add(deal);
+            } else if (commandToMatch.getStocksAmount() == 0) {
+                break;
+            }
+        }
+
+        commands.removeIf(command -> command.getStocksAmount() == 0);
+
+        return transactionsMade;
+    }
+
+
     private void checkIfUserCanCommitPurchase(Command commandToMatch) throws Exception {
         String symbol = commandToMatch.getStockSymbol();
         if (commandToMatch.getDirection() == CommandDirection.Sell) {
@@ -186,6 +255,25 @@ public class RizpaEngine {
         return transactionsMade;
     }
 
+    private boolean canMatchAllTheCommands(Command commandToMatch, Collection<Command> commands, Collection<Command> whereToTheNewCommand) throws Exception {
+        try {
+            checkIfUserCanCommitPurchase(commandToMatch);
+        }catch (Exception exception) {
+            return false;
+        }
+
+        int commandToMatchAmount = commandToMatch.getStocksAmount();
+        for (Command command : commands) {
+            if (commandToMatch.canCommitPurchaseBasedOnPrice(command)) {
+                int transactionStockAmount = Math.min(command.getStocksAmount(), commandToMatch.getStocksAmount());
+                commandToMatchAmount -= transactionStockAmount;
+            }
+        }
+
+        return commandToMatchAmount <= 0;
+    }
+
+
     private void recordTransaction(int price, User buyer, User seller, String stockSymbol) {
         TreeSet<TransactionRecord> buyerTransactionRecords = userToTransactionRecords.computeIfAbsent(buyer.getName(), v -> new TreeSet<>());
         TreeSet<TransactionRecord> sellerTransactionRecords = userToTransactionRecords.computeIfAbsent(seller.getName(), v -> new TreeSet<>());
@@ -207,7 +295,7 @@ public class RizpaEngine {
     }
 
     private boolean userHaveEnoughHoldings(Command command) {
-        return true;
+        return true; //TODO: implement
     }
 
     private String getSymbol(String stockSymbol) {
@@ -391,28 +479,6 @@ public class RizpaEngine {
 
     public void addHoldingToUser(String username, Holdings holdings) throws Exception {
         usersManager.addHoldingsToUser(username, holdings);
-        String buyer = "obaida";
-        String seller = "obaida";
-        User user = getAllUsers().getUserByName(username);
-        user.chargeBalance(1000);
-        try {
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 20, 100);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 10, 110);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 10, 90);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 10, 90);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 25, 120);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 30, 90);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 20, 80);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 20, 100);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 10, 100);
-            doLMTCommand(buyer, CommandDirection.Buy, "GOOGL", 5, 90);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 5, 90);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 25, 95);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 20, 90);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 12, 90);
-            doLMTCommand(seller, CommandDirection.Sell, "GOOGL", 13, 85);
-        }
-        catch (Exception ignored) {}
     }
 
 
@@ -433,4 +499,35 @@ public class RizpaEngine {
                 .map(Stock::getSymbol)
                 .anyMatch(stockSymbol -> stockSymbol.equalsIgnoreCase(symbol));
     }
+
+    public void doIPO(String username, String companyName, String symbol, String numberOfStocksAsString, String companyMarketValueAsString) throws Exception {
+        if(isStockExists(symbol)) {
+            throw new Exception("Stock already exists");
+        }
+        else if(isCompanyExists(companyName)) {
+            throw new Exception("Company already exists");
+        }
+        else if(numberOfStocksAsString.equalsIgnoreCase("0")) {
+            throw new Exception("number of stocks must be positive");
+        }
+        else{
+            int numberOfStocks = Integer.parseInt(numberOfStocksAsString);
+            int companyMarketValue = Integer.parseInt(companyMarketValueAsString);
+            int stockPrice = companyMarketValue / numberOfStocks;
+            stocksManager.addStock(new Stock(symbol, companyName, stockPrice));
+            User user = usersManager.getUserByName(username);
+            user.addHolding(new Item(symbol, numberOfStocks));
+        }
+    }
+
+    private boolean isCompanyExists(String companyName) {
+        return stocksManager
+                .getStocks()
+                .getStocks()
+                .stream()
+                .map(Stock::getCompanyName)
+                .anyMatch(stockSymbol -> stockSymbol.equalsIgnoreCase(companyName));
+    }
+
+
 }

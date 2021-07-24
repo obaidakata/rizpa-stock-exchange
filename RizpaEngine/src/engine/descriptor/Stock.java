@@ -54,9 +54,8 @@ public class Stock {
 
         Stock stock = (Stock) o;
 
-        if (price != stock.price) return false;
-        if (symbol != null ? !symbol.equals(stock.symbol) : stock.symbol != null) return false;
-        return companyName != null ? companyName.equals(stock.companyName) : stock.companyName == null;
+        if (symbol != null ? !symbol.equalsIgnoreCase(stock.symbol) : stock.symbol != null) return false;
+        return companyName != null ? companyName.equalsIgnoreCase(stock.companyName) : stock.companyName == null;
     }
 
     @Override

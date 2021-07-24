@@ -36,6 +36,30 @@
                 </form>
               </div>
               <br>
+              <div class="box" id="ipoBox">
+                  <h3>Initial Public Offering (IPO) </h3>
+                  <button type="button" id="ipoButton" onclick="openIPO()">Click to IPO</button>
+                  <div id="ipoBoxInner">
+                      <h4>Fill form to create new stock</h4>
+                      <form id="ipoForm">
+                          <label for="companyName">Company Name</label>
+                          <input type="text" id="companyName" name="companyName" ><br>
+
+                          <label for="symbol">Symbol</label>
+                          <input type="text" id="symbol" name="symbol" ><br>
+
+                          <label for="numberOfStocks">Number Of Stocks</label>
+                          <input type="text" id="numberOfStocks" name="numberOfStocks" ><br>
+
+                          <label for="companyMarketValue">Market value</label>
+                          <input type="text" id="companyMarketValue" name="companyMarketValue" ><br>
+
+                          <input type="Submit" value="Submit"><br>
+                      </form>
+                  </div>
+
+              </div>
+          <br>
               <div class="box">
                 <h3>Charge your account here.</h3>
                 <input type="text" id="chargeValue">

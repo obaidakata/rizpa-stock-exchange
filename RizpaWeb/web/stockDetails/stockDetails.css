@@ -5,7 +5,7 @@ td {border: 1px #DDD solid; padding: 2px; cursor: pointer;}
     margin-left: 410px;
 }
 
-#systemMessages {
+#leftSide {
     width: 400px;
     float: left;
 }
@@ -28,9 +28,15 @@ table, th, td {
 }
 
 #submitInput {
-    width: 125px;
+    width: 400px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .buttonHolder{ text-align: center; }
+
+#stockTransactions {
+    width: 400px;
+    float: right;
+    margin-right: 90px;
+}

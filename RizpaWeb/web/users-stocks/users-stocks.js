@@ -197,9 +197,28 @@ function onPageLoaded() {
     uploadFile();
     setInterval(ajaxUsersList, refreshRate);
     setInterval(getSystemHoldings, refreshRate);
-    $("#ok").click(function () {
+}
 
-    });
+
+$(function () {
+    $("#ipoBoxInner").hide();
+    $("#ipoForm").submit(function (e) {
+        $.ajax({
+            data: $(this).serialize(),
+            url: "http://localhost:8080/rizpa/stockDetails",
+            method: 'post',
+            error: function() {
+            },
+            success: function () {
+            }
+        })
+        return false;
+    })
+})
+
+function openIPO() {
+    $('#ipoButton').hide();
+    $("#ipoBoxInner").show();
 }
 
 $(onPageLoaded);

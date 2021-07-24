@@ -102,4 +102,12 @@ public class StocksManager implements Serializable {
             stocks.addAll(stocksToAdd);
         }
     }
+
+    public void addStock(Stock stock) throws Exception {
+        stocks.add(stock);
+        String symbol = stock.getSymbol();
+        this.stockSymbol2transactions.put(symbol, new TreeSet<>());
+        this.stockSymbol2BuyOffers.put(symbol, new TreeSet<>(Command::compareBuy));
+        this.stockSymbol2SellOffers.put(symbol, new TreeSet<>(Command::compareSell));
+    }
 }

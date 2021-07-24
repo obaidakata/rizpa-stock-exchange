@@ -60,4 +60,8 @@ public class User {
     public void chargeBalance(int price) {
         balance += price;
     }
+
+    public void addHolding(Item item) {
+        this.holdings.addItem(item);
+    }
 }

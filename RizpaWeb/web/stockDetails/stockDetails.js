@@ -6,7 +6,7 @@ function getStockDetails() {
     $.ajax({
         url: "http://localhost:8080/rizpa/stockDetails",
         error: function (errorObject) {
-            logMessage("Failed to load stock details");
+            logMessage("Failed to get Stock Details");
         },
         success: function(stock) {
             updateStockDetails(stock);
@@ -49,7 +49,7 @@ function getStockTransactions() {
     $.ajax({
         url: "http://localhost:8080/rizpa/stockTransactions",
         error: function (errorObject) {
-            logMessage("Failed to load stock details");
+            logMessage("Failed to get Stock Transactions");
         },
         success: function(transactins) {
             updateStockTransactions(transactins);
@@ -81,8 +81,9 @@ function updateStockTransactions(transactins) {
 function onPageLoaded() {
     setInterval(getStockDetails, refreshRate);
     setInterval(getUser, refreshRate);
-
+    setInterval(getStockTransactions, refreshRate);
 }
+
 let stockAmount = 0;
 function getUserStockHolding() {
     $.ajax({
@@ -107,12 +108,77 @@ function getUser() {
         },
         success: function (user) {
             if(user.userRole === "Trader") {
+                $('#commandBox').show();
+                $('#commands').hide();
                 setInterval(getUserStockHolding, refreshRate);
                 username = user.name;
+            }
+            else {
+                getAdminData();
             }
         }
     })
 }
+
+function getAdminData() {
+    $('#commandBox').hide();
+    $('#messageList').hide();
+    $('#systemMessagesLabel').hide();
+    setInterval(getSellCommands, refreshRate);
+    setInterval(getBuyCommands, refreshRate);
+}
+
+function getSellCommands() {
+    $.ajax({
+        url: "http://localhost:8080/rizpa/sellCommands",
+        error: function(errorObject) {
+            logMessage(errorObject.responseText);
+        },
+        success: function (sellCommands) {
+            showCommands(sellCommands, "#sellCommandsTable");
+        }
+    })
+}
+
+function getBuyCommands() {
+    $.ajax({
+        url: "http://localhost:8080/rizpa/buyCommands",
+        error: function(errorObject) {
+            logMessage(errorObject.responseText);
+        },
+        success: function (buyCommands) {
+            showCommands(buyCommands, "#buyCommandsTable");
+        }
+    })
+}
+
+function showCommands(commands, tableId) {
+//clear all current users
+    const table = $(tableId);
+    table.empty();
+    $('<tr>' +
+        '<th> Time Stamp</th>' +
+        '<th> Type </th>' +
+        '<th> Amount </th>' +
+        '<th> Price </th>' +
+        '<th> Username </th>' +
+        '</tr>')
+        .appendTo(table);
+
+    $.each(commands || [], function(index, command) {
+        const dealData = command.dealData;
+
+        $('<tr>' +
+            '<th>' + dealData.timeStamp + '</th>' +
+            '<th>' + command.type + '</th>' +
+            '<th>' + dealData.amount + '</th>' +
+            '<th>' + dealData.price + '</th>' +
+            '<th>' + command.username + '</th>' +
+            '</tr>')
+            .appendTo(table);
+    });
+}
+
 
 
 $(onPageLoaded);
@@ -125,26 +191,46 @@ function logMessage(message) {
     $("#messageList").append('<li>' + message + '</li>');
 }
 
-// $(function () {
-//     $("#commandForm").submit(function (e) {
-//         $.ajax({
-//             data: $(this).serialize(),
-//             url: this.action,
-//             timeout: 2000,
-//             method: 'get',
-//             error: function(errorObject) {
-//                 console.log("error");
-//                 console.log(errorObject.responseText);
-//             },
-//             success: function (nextPageUrl) {
-//                 console.log("success");
-//                 console.log(nextPageUrl);
-//                 window.location.replace(nextPageUrl);
-//             }
-//         })
-//         return false;
-//     })
-// })
+$(function () {
+    $("#commandForm").submit(function (e) {
+        $.ajax({
+            data: $(this).serialize(),
+            url: this.action,
+            method: 'post',
+            error: function(errorObject) {
+                logMessage(errorObject.responseText);
+            },
+            success: function (transactions) {
+                showUserResults(transactions);
+            }
+        })
+        return false;
+    })
+})
+
+function showUserResults(transactions){
+    transactions = transactions || [];
+
+    if(transactions.length === 0) {
+        logMessage("Command was successfully buy no transactions have been made");
+    }
+    else {
+        $.each(transactions, (index, transaction) => {
+            logMessage("New transaction : " + getTransactionDetails(transaction));
+        })
+    }
+}
+
+function getTransactionDetails(transaction) {
+    const dealData = transaction.dealData;
+    return  "timeStamp = " + dealData.timeStamp +
+            ", type = " + transaction.type +
+            ", amount = " + dealData.amount +
+            ", price = " + dealData.price +
+            ", Buyer Name = " + transaction.buyerName +
+            ", Seller Name = " + transaction.sellerName
+
+}
 
 function commandTypeChange(select) {
     if(select.value === "MKT") {

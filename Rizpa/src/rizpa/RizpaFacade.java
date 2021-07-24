@@ -6,10 +6,12 @@ import engine.Transaction;
 import engine.TransactionRecord;
 import engine.command.Command;
 import engine.command.CommandDirection;
+import engine.command.CommandType;
 import engine.descriptor.*;
 import rizpa.generated.RizpaStockExchangeDescriptor;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,16 +67,6 @@ public class RizpaFacade {
         } else if(!rizpaEngine.isAllUsersNamesUnique(descriptor)) {
             throw new Exception("Users names are not unique");
         }
-    }
-
-    public List<Transaction> doLMTCommand(String username, String direction, String symbol, int amount, int limit) throws Exception {
-        CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
-        return rizpaEngine.doLMTCommand(username, commandDirection, symbol, amount, limit);
-    }
-
-    public List<Transaction> doMKTCommand(String username, String direction, String symbol, int amount) throws Exception {
-        CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
-        return rizpaEngine.doMKTCommand(username, commandDirection, symbol, amount);
     }
 
     public Collection<String> getAllSymbols() {
@@ -165,5 +157,48 @@ public class RizpaFacade {
 
     public boolean isStockExists(String symbol) {
         return rizpaEngine.isStockExists(symbol);
+    }
+
+    public List<Transaction> doCommand(String username,
+                                       String stockSymbol,
+                                       String direction,
+                                       String commandTypeAsString,
+                                       String priceAsString,
+                                       String amountAsString) throws Exception {
+        CommandType commandType = CommandType.valueOf(commandTypeAsString);
+        CommandDirection commandDirection = direction.equalsIgnoreCase("Buy") ? CommandDirection.Buy : CommandDirection.Sell;
+        int amount = Integer.parseInt(amountAsString);
+        switch (commandType) {
+            case MKT:
+                return rizpaEngine.doMKTCommand(username,
+                        commandDirection,
+                        stockSymbol,
+                        amount);
+            case LMT:
+                return rizpaEngine.doLMTCommand(username,
+                        commandDirection,
+                        stockSymbol,
+                        amount,
+                        Integer.parseInt(priceAsString));
+
+            case FOK:
+                return rizpaEngine.doFOKCommand(username,
+                        commandDirection,
+                        stockSymbol,
+                        amount,
+                        Integer.parseInt(priceAsString));
+            case IOC:
+                return rizpaEngine.doIOCCommand(username,
+                        commandDirection,
+                        stockSymbol,
+                        amount,
+                        Integer.parseInt(priceAsString));
+        }
+
+        return null;
+    }
+
+    public void doIPO(String username, String companyName, String symbol, String numberOfStocks, String companyMarketValue) throws Exception {
+        rizpaEngine.doIPO(username, companyName, symbol, numberOfStocks, companyMarketValue);
     }
 }

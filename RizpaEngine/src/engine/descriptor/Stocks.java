@@ -22,8 +22,12 @@ public class Stocks {
     }
 
     public void addAll(Stocks stocks) {
-        if(stocks != null) {
-            this.stocks.addAll(stocks.getStocks());
+        if(stocks != null && stocks.stocks != null) {
+            for (Stock stockAdd : stocks.stocks) {
+                if(!this.stocks.contains(stockAdd)) {
+                    this.stocks.add(stockAdd);
+                }
+            }
         }
     }
 
@@ -47,5 +51,12 @@ public class Stocks {
     @Override
     public int hashCode() {
         return stocks != null ? stocks.hashCode() : 0;
+    }
+
+    public void add(Stock stock) throws Exception {
+        if(stocks.contains(stock)) {
+            throw new Exception("Stock already exists");
+        }
+        stocks.add(stock);
     }
 }
