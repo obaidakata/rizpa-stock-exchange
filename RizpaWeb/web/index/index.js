@@ -6,15 +6,16 @@ $(function () {
             timeout: 2000,
             method: 'get',
             error: function(errorObject) {
-                console.log("error");
-                console.log(errorObject.responseText);
+                logMessage(errorObject.responseText);
             },
             success: function (nextPageUrl) {
-                console.log("success");
-                console.log(nextPageUrl);
                 window.location.replace(nextPageUrl);
             }
         })
         return false;
     })
 })
+
+function logMessage(message) {
+    $("#messageList").append('<li>' + message + '</li>');
+}

@@ -7,27 +7,32 @@
     <script type="text/javascript" src="index/index.js"></script>
 </head>
 <body>
-<h1>Log In Page</h1>
+    <div style="width: 100%;">
+        <div style="width: 50%; height: 100px; float: left; ">
+            <h1>System Messages</h1>
+            <ol id="messageList">
+            </ol>
+        </div>
+        <div style="margin-left: 50%; height: 100px; ">
+            <h1>Log In Page</h1>
 
-<br>
-<div class="center">
-    <form id="loginForm" action="login">
-        <label for="firstName">First name:</label>
-        <input type="text" id="firstName" name="username" value="obaida"><br>
+            <br>
+            <form id="loginForm" action="login">
+                <label for="firstName">First name:</label>
+                <input type="text" id="firstName" name="username" value="obaida"><br>
 
-        <label>User Type:</label>
+                <label>User Type:</label>
 
-        <input type="radio" id="adminRadio" name="userRole" value="Admin" checked>
-        <label for="adminRadio">Admin</label>
+                <input type="radio" id="adminRadio" name="userRole" value="Admin" checked>
+                <label for="adminRadio">Admin</label>
 
-        <input type="radio" id="traderUserRadio" name="userRole" value="Trader" checked>
-        <label for="traderUserRadio">Trader</label>
+                <input type="radio" id="traderUserRadio" name="userRole" value="Trader" checked>
+                <label for="traderUserRadio">Trader</label>
 
-        <br>
-        <input type="submit" value="Submit">
-    </form>
-    <div id="error-placeholder" class="alert-danger" role="alert"></div>
-</div>
-
+                <br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
 </body>
 </html>
