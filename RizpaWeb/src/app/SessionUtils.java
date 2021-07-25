@@ -9,13 +9,23 @@ public class SessionUtils {
 
     public static String getUsername(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Object sessionAttribute = session != null ? session.getAttribute(Constants.USERNAME):  null;
+        Object sessionAttribute = null;
+        if(session != null) {
+            session.setMaxInactiveInterval(-3);
+            sessionAttribute =  session.getAttribute(Constants.USERNAME);
+        }
+
         return sessionAttribute != null ? sessionAttribute.toString() : null;
     }
 
     public static String getStockSymbol(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        Object sessionAttribute = session != null ? session.getAttribute(Constants.STOCK_SYMBOL):  null;
+        Object sessionAttribute = null;
+        if(session != null) {
+            session.setMaxInactiveInterval(-3);
+            sessionAttribute =  session.getAttribute(Constants.STOCK_SYMBOL);
+        }
+
         return sessionAttribute != null ? sessionAttribute.toString() : null;
     }
 }
