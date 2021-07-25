@@ -66,7 +66,6 @@ function uploadFile() {
                 timeout: 4000,
                 error: function(e) {
                     logMessage("Failed to upload file");
-                    logMessage("Failed to get result from server " + e);
                 },
                 success: function(r) {
                     logMessage("File loaded successfully");
@@ -238,7 +237,6 @@ function chargeAccount() {
             timeout: 2000,
             method: 'post',
             error: function (errorObject) {
-                logMessage("Failed charging the account");
             },
             success: function (newBalance) {
                 logMessage("Account charging was successful, new balance = " + newBalance);
@@ -254,7 +252,6 @@ function goToStock() {
         timeout: 2000,
         method: 'get',
         error: function (errorObject) {
-            logMessage("Failed redirect to stock details (" + selectedStockSymbol + " )");
         },
         success: function (nextPageUrl) {
             logMessage(nextPageUrl);

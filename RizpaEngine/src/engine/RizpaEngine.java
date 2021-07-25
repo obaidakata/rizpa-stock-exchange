@@ -528,6 +528,4 @@ public class RizpaEngine {
                 .map(Stock::getCompanyName)
                 .anyMatch(stockSymbol -> stockSymbol.equalsIgnoreCase(companyName));
     }
-
-
 }

@@ -5,9 +5,6 @@ let stockSymbol = '';
 function getStockDetails() {
     $.ajax({
         url: "http://localhost:8080/rizpa/stockDetails",
-        error: function (errorObject) {
-            logMessage("Failed to get Stock Details");
-        },
         success: function(stock) {
             updateStockDetails(stock);
         }
@@ -49,7 +46,6 @@ function getStockTransactions() {
     $.ajax({
         url: "http://localhost:8080/rizpa/stockTransactions",
         error: function (errorObject) {
-            logMessage("Failed to get Stock Transactions");
         },
         success: function(transactins) {
             updateStockTransactions(transactins);
