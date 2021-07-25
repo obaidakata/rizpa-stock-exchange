@@ -40,24 +40,18 @@ public class RizpaFacade {
         return rizpaEngine.getAllStocks();
     }
 
-    public void loadNewData(String filePath) throws Exception {
-        RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parseOldData(filePath);
-        StocksManager descriptor = converter.getStockManager(newRizpaStockExchangeDescriptor);
-        checkData(descriptor);
-        rizpaEngine.loadNewData(descriptor);
-    }
 
     public void loadNewData(String username, InputStream inputStream) throws Exception {
         RizpaStockExchangeDescriptor newRizpaStockExchangeDescriptor = parser.parseInputStream(inputStream);
         StocksManager descriptor = converter.getStockManager(newRizpaStockExchangeDescriptor);
         Holdings holdings = converter.getUserHoldings(newRizpaStockExchangeDescriptor);
 
-        checkData(descriptor);
+        checkData(descriptor, holdings);
         rizpaEngine.loadNewData(descriptor);
         rizpaEngine.addHoldingToUser(username, holdings);
     }
 
-    private void checkData(StocksManager descriptor) throws Exception {
+    private void checkData(StocksManager descriptor, Holdings holdings) throws Exception {
         if (!rizpaEngine.isAllStocksSymbolUnique(descriptor)) {
             String SYMBOLS_ARE_NOT_UNIQUE = "Symbols are not unique";
             throw new Exception(SYMBOLS_ARE_NOT_UNIQUE);
@@ -66,8 +60,33 @@ public class RizpaFacade {
             throw new Exception(COMPANIES_NAMES_ARE_NOT_UNIQUE);
         } else if(!rizpaEngine.isAllUsersNamesUnique(descriptor)) {
             throw new Exception("Users names are not unique");
+        } else if(!allHoldingsExistsInStockManager(descriptor, holdings)) {
+            throw new Exception("Not all holdings exists in the XML file");
         }
     }
+
+    private boolean allHoldingsExistsInStockManager(StocksManager descriptor, Holdings holdings) {
+        boolean isValid = true;
+        if(holdings != null && descriptor != null) {
+            for (Item holding : holdings) {
+                String symbol = holding.getSymbol();
+                isValid = descriptor
+                        .getStocks()
+                        .getStocks()
+                        .stream()
+                        .map(Stock::getSymbol)
+                        .collect(Collectors.toList())
+                        .contains(symbol);
+
+                if(!isValid) {
+                    break;
+                }
+            }
+        }
+
+        return isValid;
+    }
+
 
     public Collection<String> getAllSymbols() {
         return rizpaEngine.getAllSymbols();

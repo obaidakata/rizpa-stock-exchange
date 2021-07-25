@@ -1,12 +1,13 @@
 package engine.descriptor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Stocks {
     private List<Stock> stocks;
 
     public Stocks(List<Stock> stocks) {
-        this.stocks = stocks;
+        this.setStocks(stocks);
     }
 
     public List<Stock> getStocks() {
@@ -14,7 +15,7 @@ public class Stocks {
     }
 
     public void setStocks(List<Stock> stocks) {
-        this.stocks = stocks;
+        this.stocks = stocks != null ? stocks : new ArrayList<>();
     }
 
     public void addAll(List<Stock> stocks) {
@@ -22,11 +23,16 @@ public class Stocks {
     }
 
     public void addAll(Stocks stocks) {
-        if(stocks != null && stocks.stocks != null) {
-            for (Stock stockAdd : stocks.stocks) {
-                if(!this.stocks.contains(stockAdd)) {
-                    this.stocks.add(stockAdd);
+        if(stocks != null) {
+            if(stocks.stocks != null) {
+                for (Stock stockAdd : stocks.stocks) {
+                    if (!this.stocks.contains(stockAdd)) {
+                        this.stocks.add(stockAdd);
+                    }
                 }
+            }
+            else {
+                setStocks(null);
             }
         }
     }

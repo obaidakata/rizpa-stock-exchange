@@ -65,7 +65,7 @@ function uploadFile() {
                 contentType: false, // Set content type to false as jQuery will tell the server its a query string request
                 timeout: 4000,
                 error: function(e) {
-                    logMessage("Failed to upload file");
+                    logMessage(e.responseText)
                 },
                 success: function(r) {
                     logMessage("File loaded successfully");
@@ -127,7 +127,7 @@ function refreshHoldingsList(stocks) {
             '<td>' + stock.companyName + '</td>' +
             '<td>' + stock.symbol + '</td>' +
             '<td>' + stock.price + '</td>' +
-            '<td>' + stock.sumOfAllTransactions + '</td>' +
+            '<td>' + stock.price * stock.amount + '</td>' +
             '</tr>';
 
         $(rowString).click(function () {

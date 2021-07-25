@@ -32,7 +32,8 @@ public class FileUploadServlet extends HttpServlet {
         try {
             rizpaFacade.loadNewData(username, file);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            response.setStatus(401);
+            response.getOutputStream().println(e.getMessage());
         }
     }
 
